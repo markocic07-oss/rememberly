@@ -1,0 +1,8 @@
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.billing-status]
+verify_jwt = true
+
+[functions.generate-daily-briefings]
+verify_jwt = false

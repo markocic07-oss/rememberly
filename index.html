@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rememberly — Your life, remembered</title>
+  <meta name="theme-color" content="#080D18" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg:#080d18; --sidebar:#0b1220; --panel:#0e1625; --card:#121d2e; --card-2:#18253a;
+      --text:#f5f7fc; --muted:#929fb5; --border:rgba(255,255,255,.075);
+      --blue:#648bff; --violet:#8b72ff; --green:#65d7a5; --orange:#f5b86b;
+    }
+    html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:"DM Sans",sans-serif; }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; }
+    .auth-screen { position:fixed; inset:0; z-index:300; display:grid; place-items:center; padding:20px; background:radial-gradient(circle at 50% 20%,rgba(100,139,255,.12),transparent 28%),var(--bg); }
+    .auth-card { width:min(420px,100%); border:1px solid var(--border); border-radius:20px; background:rgba(18,29,46,.96); padding:28px; box-shadow:0 30px 100px rgba(0,0,0,.38); }
+    .auth-brand { display:flex; justify-content:center; align-items:center; gap:11px; margin-bottom:25px; font-family:Manrope,sans-serif; font-size:21px; font-weight:700; }
+    .auth-tabs { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:20px; }
+    .auth-tab { height:42px; border:1px solid var(--border); border-radius:10px; background:#0d1523; color:var(--muted); }
+    .auth-tab.active { background:rgba(100,139,255,.12); border-color:rgba(100,139,255,.38); color:white; }
+    .auth-card .form-group input { height:44px; }
+    .auth-submit { width:100%; height:44px; border:0; border-radius:11px; background:linear-gradient(135deg,#648bff,#7b72ef); color:white; font-weight:700; }
+    .auth-error { min-height:18px; margin:10px 0 0; color:#ff9b9b; font-size:12px; text-align:center; }
+    .vault-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .category-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:16px; }
+    .category-card { min-height:92px; border:1px solid var(--border); border-radius:13px; background:var(--card); padding:14px; text-align:left; color:var(--text); }
+    .category-card:hover { border-color:rgba(100,139,255,.28); transform:translateY(-2px); }
+    .category-card i { width:31px;height:31px;border-radius:9px;display:grid;place-items:center;background:rgba(100,139,255,.1);color:#91aaff;margin-bottom:10px; }
+    .category-card strong { display:block;font-size:12px } .category-card span { color:var(--muted);font-size:10px }
+    .document-card { border:1px solid var(--border);border-radius:15px;background:var(--card);padding:14px;min-height:180px;position:relative; }
+    .document-card:hover { border-color:rgba(100,139,255,.25);transform:translateY(-2px); }
+    .document-thumb { height:82px;border-radius:10px;background:#0b1321;display:grid;place-items:center;color:#91aaff;border:1px solid var(--border);overflow:hidden;margin-bottom:12px; }
+    .document-thumb img { width:100%;height:100%;object-fit:cover } .document-thumb svg { width:26px }
+    .document-card h3 { margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+    .document-card p { margin:0;color:var(--muted);font-size:10px }
+    .document-actions { display:flex;justify-content:flex-end;gap:5px;margin-top:11px }
+    .document-actions button { width:30px;height:30px;border:1px solid var(--border);border-radius:8px;background:#101827;color:var(--muted);display:grid;place-items:center }
+    .document-actions svg { width:14px }
+    .status-pill { display:inline-flex;align-items:center;padding:4px 8px;border-radius:20px;font-size:9px;margin-top:8px }
+    .status-active { background:rgba(101,215,165,.10);color:#65d7a5 }.status-soon { background:rgba(245,184,107,.10);color:#f5b86b }.status-expired { background:rgba(255,126,126,.10);color:#ff7e7e }
+    .document-upload { min-height:150px;border:1px dashed rgba(100,139,255,.32);border-radius:15px;background:rgba(100,139,255,.025);display:grid;place-items:center;text-align:center;color:var(--muted);cursor:pointer }
+    .document-upload strong { display:block;color:white;margin:8px 0 4px }.document-upload svg { color:#91aaff }
+    .upload-progress { height:5px;border-radius:8px;background:#202d43;overflow:hidden;margin-top:10px }.upload-progress span { display:block;height:100%;width:0;background:linear-gradient(90deg,#648bff,#8b72ff);transition:.2s }
+    .warranty-grid,.receipts-grid,.expiration-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px }
+    .metric-row { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px }
+    .metric-row .stat { min-height:94px }
+    .timeline-item { display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border) }.timeline-dot { width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none }
+    .logout-btn { border:0; background:transparent; color:var(--muted); padding:5px; }
+    .app.authenticated { display:grid; }
+    .app:not(.authenticated) { display:none; }
+    .app { min-height:100vh; display:grid; grid-template-columns:238px minmax(0,1fr); }
+    .sidebar { position:fixed; inset:0 auto 0 0; width:238px; z-index:30; display:flex; flex-direction:column;
+      padding:25px 16px 16px; background:rgba(11,18,32,.96); border-right:1px solid var(--border); backdrop-filter:blur(18px); }
+    .brand { height:42px; display:flex; align-items:center; gap:11px; padding:0 8px; margin-bottom:21px; font-family:Manrope,sans-serif; font-size:18px; font-weight:700; letter-spacing:-.4px; }
+    .brand-mark { width:34px; height:34px; display:grid; place-items:center; border-radius:11px; background:linear-gradient(135deg,#6d96ff,#7b69ea);
+      box-shadow:0 8px 24px rgba(100,139,255,.22); }
+    .brand-mark svg { width:20px; }
+    .new-btn { height:43px; border:0; border-radius:12px; color:white; display:flex; align-items:center; justify-content:center; gap:8px;
+      background:linear-gradient(135deg,#648bff,#7b72ef); box-shadow:0 10px 28px rgba(100,139,255,.18); font-weight:700; margin:0 2px 18px; transition:.18s; }
+    .new-btn:hover { transform:translateY(-1px); box-shadow:0 12px 32px rgba(100,139,255,.28); }
+    .nav { display:flex; flex:1; min-height:0; flex-direction:column; gap:3px; overflow:auto; }
+    .nav-item { height:43px; border:0; background:transparent; color:var(--muted); border-radius:10px; display:flex; align-items:center; gap:11px;
+      padding:0 12px; text-align:left; width:100%; transition:.16s; position:relative; }
+    .nav-item svg { width:18px; height:18px; stroke-width:1.8; }
+    .nav-item:hover { color:var(--text); background:rgba(255,255,255,.035); }
+    .nav-item.active { color:#fff; background:linear-gradient(90deg,rgba(100,139,255,.16),rgba(100,139,255,.07)); }
+    .nav-item.active::before { content:""; position:absolute; left:0; width:3px; height:21px; border-radius:4px; background:var(--blue); }
+    .nav-divider { height:1px; background:var(--border); margin:15px 8px 12px; }
+    .side-bottom { margin-top:auto; }
+    .plan-card { margin:9px 2px 10px; padding:12px; border:1px solid var(--border); background:rgba(255,255,255,.025); border-radius:12px; }
+    .plan-card strong { font-size:12px; } .plan-card p { margin:4px 0 9px; color:var(--muted); font-size:11px; }
+    .usage { height:4px; background:#202d43; border-radius:9px; overflow:hidden; } .usage span { display:block; width:38%; height:100%; background:var(--blue); }
+    .profile { height:49px; display:flex; align-items:center; gap:9px; padding:5px 8px; border-radius:11px; }
+    .avatar { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#6d91d8,#8d71d9); font-weight:700; font-size:12px; }
+    .profile-info { min-width:0; flex:1; } .profile-info strong { display:block; font-size:12px; } .profile-info span { color:var(--muted); font-size:10px; }
+    .profile button { border:0; background:transparent; color:var(--muted); padding:5px; }
+    .main { grid-column:2; min-width:0; padding:0 44px 70px; max-width:1510px; width:100%; margin:0 auto; }
+    .topbar { height:86px; display:flex; align-items:center; justify-content:flex-end; }
+    .top-actions { display:flex; gap:8px; }
+    .icon-btn { width:38px; height:38px; border:1px solid var(--border); border-radius:10px; background:#101827; color:var(--muted); display:grid; place-items:center; transition:.16s; }
+    .icon-btn:hover { color:white; border-color:rgba(255,255,255,.14); transform:translateY(-1px); } .icon-btn svg { width:17px; }
+    .welcome { display:flex; align-items:flex-end; justify-content:space-between; margin:2px 0 22px; }
+    .welcome h1 { margin:0 0 7px; font-family:Manrope,sans-serif; font-size:31px; letter-spacing:-1.2px; }
+    .welcome p { margin:0; color:var(--muted); font-size:14px; }
+    .global-search { width:100%; height:58px; display:flex; align-items:center; gap:12px; padding:0 16px; margin-bottom:18px;
+      border:1px solid var(--border); border-radius:15px; background:linear-gradient(135deg,rgba(18,29,46,.94),rgba(14,22,37,.94));
+      box-shadow:0 12px 40px rgba(0,0,0,.12); }
+    .global-search svg { width:20px; color:#7e8daa; } .global-search input { flex:1; border:0; outline:0; background:transparent; color:white; font-size:14px; }
+    .global-search input::placeholder { color:#7d899d; } .key { padding:4px 7px; border:1px solid var(--border); border-radius:7px; color:#7d899d; font-size:11px; background:#111a29; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+    .stat { min-height:112px; border:1px solid var(--border); border-radius:15px; background:var(--card); padding:16px 17px; position:relative; overflow:hidden; }
+    .stat-top { display:flex; justify-content:space-between; align-items:center; } .stat-label { color:var(--muted); font-size:12px; }
+    .stat-icon { width:32px; height:32px; border-radius:9px; display:grid; place-items:center; background:rgba(100,139,255,.11); color:#87a7ff; }
+    .stat-icon svg { width:16px; } .stat-value { font-family:Manrope,sans-serif; font-size:26px; margin-top:12px; }
+    .trend { float:right; margin-top:-21px; color:var(--green); font-size:10px; }
+    .section-head { height:42px; display:flex; align-items:center; justify-content:space-between; }
+    .section-head h2 { margin:0; font-family:Manrope,sans-serif; font-size:16px; letter-spacing:-.3px; }
+    .text-btn { border:0; background:transparent; color:#91a9ed; font-size:12px; }
+    .recent-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .memory-card { min-height:170px; border:1px solid var(--border); border-radius:15px; background:var(--card); padding:15px;
+      transition:.18s; cursor:pointer; position:relative; }
+    .memory-card:hover { transform:translateY(-3px); border-color:rgba(100,139,255,.24); box-shadow:0 16px 34px rgba(0,0,0,.16); }
+    .memory-card-head { display:flex; justify-content:space-between; align-items:flex-start; } .memory-kind { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:11px; }
+    .memory-kind i { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:rgba(100,139,255,.09); color:#88a6f8; }
+    .memory-kind svg { width:14px; } .favorite { border:0; background:transparent; color:#68758a; padding:3px; } .favorite.active { color:#f4b86d; }
+    .favorite svg { width:16px; } .memory-card h3 { margin:14px 0 7px; font-size:14px; }
+    .memory-card p { margin:0; color:var(--muted); font-size:12px; line-height:1.55; height:38px; overflow:hidden; }
+    .memory-meta { display:flex; align-items:center; justify-content:space-between; margin-top:15px; }
+    .badge { padding:5px 8px; border-radius:7px; background:rgba(139,114,255,.1); color:#a99cf8; font-size:10px; }
+    .memory-date { color:#738097; font-size:10px; }
+    .dashboard-bottom { display:grid; grid-template-columns:1.55fr .75fr; gap:18px; margin-top:28px; }
+    .panel { border:1px solid var(--border); border-radius:16px; background:rgba(18,29,46,.7); padding:16px; }
+    .quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .quick { height:94px; border:1px solid var(--border); border-radius:12px; background:#111a29; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;
+      color:var(--muted); border:0; box-shadow:inset 0 0 0 1px var(--border); transition:.16s; }
+    .quick:hover { background:#152039; color:white; transform:translateY(-2px); }
+    .quick i { width:31px; height:31px; border-radius:9px; display:grid; place-items:center; background:rgba(100,139,255,.1); color:#91aaff; }
+    .quick svg { width:16px; } .quick span { font-size:11px; }
+    .reminder { display:flex; gap:10px; align-items:center; padding:11px 0; border-top:1px solid var(--border); }
+    .reminder:first-of-type { border-top:0; } .reminder-dot { width:8px; height:8px; border-radius:50%; background:#f3aeb2; box-shadow:0 0 12px rgba(243,174,178,.25); }
+    .reminder strong { display:block; font-size:12px; } .reminder span { color:var(--muted); font-size:10px; }
+    .content-page { display:none; } .content-page.active { display:block; }
+    .page-title { display:flex; align-items:center; justify-content:space-between; margin:0 0 21px; }
+    .page-title h1 { font-family:Manrope,sans-serif; font-size:28px; margin:0; }
+    .toolbar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+    .field, .toolbar select { height:40px; border:1px solid var(--border); border-radius:10px; background:#101827; color:white; outline:0; padding:0 11px; }
+    .search-small { flex:1; max-width:340px; display:flex; align-items:center; gap:8px; }
+    .search-small svg { width:16px; color:var(--muted); } .search-small input { width:100%; height:40px; border:0; outline:0; background:transparent; color:white; }
+    .library-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .library-grid.list { grid-template-columns:1fr; } .library-grid.list .memory-card { min-height:120px; }
+    .chat-layout { height:calc(100vh - 145px); min-height:560px; display:grid; grid-template-rows:auto 1fr auto; border:1px solid var(--border); border-radius:18px; background:rgba(18,29,46,.55); overflow:hidden; }
+    .chat-head { padding:18px 20px; border-bottom:1px solid var(--border); }
+    .chat-head h2 { margin:0 0 4px; font-size:15px; } .chat-head p { margin:0; color:var(--muted); font-size:11px; }
+    .chat-body { padding:24px; overflow:auto; }
+    .suggestions { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .suggestion { border:1px solid var(--border); border-radius:20px; background:#111a29; color:#aab4c5; padding:9px 12px; font-size:11px; }
+    .suggestion:hover { color:white; border-color:rgba(100,139,255,.3); }
+    .message { max-width:720px; margin-bottom:14px; } .message.user { margin-left:auto; background:var(--blue); border-radius:15px 15px 4px 15px; padding:12px 14px; font-size:13px; }
+    .message.ai { display:flex; gap:10px; font-size:13px; line-height:1.6; color:#d7ddea; }
+    .ai-mark { flex:none; width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:linear-gradient(135deg,#648bff,#8b72ff); }
+    .chat-input { display:flex; gap:8px; padding:13px; border-top:1px solid var(--border); }
+    .chat-input input { flex:1; height:43px; border:1px solid var(--border); border-radius:11px; background:#0e1726; color:white; padding:0 13px; outline:0; }
+    .send-btn { width:43px; border:0; border-radius:11px; background:var(--blue); color:white; display:grid; place-items:center; }
+    .send-btn svg { width:17px; }
+    .empty-page { display:grid; place-items:center; min-height:430px; text-align:center; color:var(--muted); }
+    .empty-page i { width:56px; height:56px; border-radius:16px; display:grid; place-items:center; margin:auto auto 14px; background:rgba(100,139,255,.09); color:#91aaff; }
+    .empty-page h2 { color:white; font-size:17px; margin:0 0 7px; }
+    .modal-backdrop { position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; background:rgba(3,7,14,.72); backdrop-filter:blur(8px); padding:20px; }
+    .modal-backdrop.open { display:flex; } .modal { width:min(620px,100%); max-height:90vh; overflow:auto; border:1px solid var(--border); border-radius:18px; background:#101827; box-shadow:0 30px 100px rgba(0,0,0,.48); }
+    .modal-head { height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--border); }
+    .modal-head h2 { margin:0; font-size:16px; } .modal-body { padding:20px; } .modal-actions { display:flex; justify-content:flex-end; gap:8px; padding:13px 20px; border-top:1px solid var(--border); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; } .form-group { margin-bottom:13px; }
+    .form-group label { display:block; color:#adb6c7; font-size:11px; margin-bottom:7px; }
+    .form-group input,.form-group textarea,.form-group select { width:100%; border:1px solid var(--border); border-radius:10px; background:#0b1321; color:white; outline:0; padding:10px 11px; }
+    .form-group textarea { min-height:130px; resize:vertical; } .form-group input:focus,.form-group textarea:focus { border-color:rgba(100,139,255,.5); }
+    .secondary-btn,.primary-btn { height:39px; border-radius:10px; padding:0 14px; } .secondary-btn { border:1px solid var(--border); background:#111a29; color:#dfe5f1; }
+    .primary-btn { border:0; background:var(--blue); color:white; font-weight:700; }
+    .capture-tabs { display:flex; gap:7px; margin-bottom:16px; } .capture-tab { flex:1; height:40px; border:1px solid var(--border); border-radius:10px; background:#0d1523; color:var(--muted); }
+    .capture-tab.active { border-color:rgba(100,139,255,.4); background:rgba(100,139,255,.1); color:white; }
+    .drop-zone { min-height:190px; border:1px dashed rgba(255,255,255,.14); border-radius:13px; display:grid; place-items:center; text-align:center; color:var(--muted); background:#0c1421; }
+    .drop-zone svg { margin-bottom:8px; color:#89a5f5; } .drop-zone strong { display:block; color:white; margin-bottom:5px; }
+    .search-overlay { position:fixed; z-index:90; inset:0; background:rgba(3,7,14,.62); backdrop-filter:blur(7px); display:none; padding-top:13vh; }
+    .search-overlay.open { display:block; } .search-box { width:min(620px,calc(100% - 32px)); margin:auto; border:1px solid var(--border); border-radius:16px; background:#101827; overflow:hidden; box-shadow:0 30px 100px rgba(0,0,0,.5); }
+    .search-box-head { height:58px; display:flex; align-items:center; gap:10px; padding:0 15px; border-bottom:1px solid var(--border); }
+    .search-box-head svg { width:18px; color:var(--muted); } .search-box-head input { flex:1; border:0; outline:0; background:transparent; color:white; }
+    .search-results { max-height:420px; overflow:auto; padding:8px; } .search-result { display:flex; gap:10px; align-items:center; padding:11px; border-radius:10px; }
+    .search-result:hover { background:#162136; } .search-result div { min-width:0; } .search-result strong { display:block; font-size:12px; } .search-result span { color:var(--muted); font-size:10px; }
+    .toast-wrap { position:fixed; z-index:200; right:20px; bottom:20px; display:flex; flex-direction:column; gap:8px; }
+    .toast { min-width:260px; border:1px solid var(--border); border-radius:11px; background:#18243a; padding:12px 14px; font-size:12px; box-shadow:0 16px 40px rgba(0,0,0,.28); animation:toast-in .25s ease; }
+    @keyframes toast-in { from { opacity:0; transform:translateY(8px); } }
+    .pricing-intro { max-width:760px; margin:0 auto 30px; text-align:center; }
+    .pricing-intro h1 { margin:0 0 10px; font:700 clamp(28px,4vw,40px) Manrope,sans-serif; letter-spacing:-1.2px; }
+    .pricing-intro p { margin:0; color:var(--muted); font-size:14px; }
+    .billing-note { margin:14px 0 0; color:#8390a7; font-size:11px; }
+    .plan-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; align-items:stretch; }
+    .pricing-card { position:relative; display:flex; flex-direction:column; padding:22px; border:1px solid var(--border); border-radius:18px; background:linear-gradient(155deg,rgba(22,34,54,.96),rgba(14,22,37,.96)); transition:transform .2s,border-color .2s,box-shadow .2s; }
+    .pricing-card:hover { transform:translateY(-4px); border-color:rgba(100,139,255,.35); box-shadow:0 20px 50px rgba(0,0,0,.22); }
+    .pricing-card.featured { border-color:rgba(100,139,255,.55); background:radial-gradient(circle at 50% 0,rgba(100,139,255,.16),transparent 46%),linear-gradient(155deg,#17233a,#101827); box-shadow:0 16px 50px rgba(63,92,180,.12); }
+    .plan-badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); padding:5px 11px; white-space:nowrap; border-radius:20px; background:linear-gradient(90deg,#648bff,#8b72ff); color:white; font-size:9px; font-weight:700; letter-spacing:.8px; }
+    .pricing-card h2 { margin:2px 0 7px; font:700 18px Manrope,sans-serif; }
+    .pricing-card .plan-summary { min-height:34px; margin:0; color:var(--muted); font-size:11px; line-height:1.55; }
+    .plan-price { display:flex; align-items:baseline; gap:5px; margin:19px 0 4px; }
+    .plan-price strong { font:700 35px Manrope,sans-serif; letter-spacing:-1.2px; }
+    .plan-price span,.plan-billing { color:var(--muted); font-size:11px; }
+    .plan-billing { min-height:28px; }
+    .plan-action { width:100%; min-height:42px; margin:12px 0 17px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#172238; color:#f4f6fb; font-weight:700; font-size:12px; }
+    .pricing-card.featured .plan-action { border:0; background:linear-gradient(135deg,#648bff,#7b72ef); }
+    .plan-action:hover { filter:brightness(1.09); }
+    .plan-features { display:grid; gap:10px; margin:0; padding:15px 0 0; border-top:1px solid var(--border); list-style:none; }
+    .plan-features li { display:flex; align-items:flex-start; gap:9px; color:#c7d0df; font-size:11px; line-height:1.45; }
+    .plan-features svg { flex:none; width:14px; height:14px; color:#7f9eff; }
+    .comparison-wrap { margin-top:42px; }
+    .comparison-wrap h2 { margin:0 0 6px; font:700 20px Manrope,sans-serif; }
+    .comparison-wrap>p { margin:0 0 16px; color:var(--muted); font-size:11px; }
+    .comparison-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:rgba(18,29,46,.55); }
+    .comparison-table { width:100%; min-width:650px; border-collapse:collapse; text-align:center; font-size:11px; }
+    .comparison-table th,.comparison-table td { padding:12px 14px; border-bottom:1px solid var(--border); }
+    .comparison-table th:first-child,.comparison-table td:first-child { width:40%; text-align:left; color:#d5dbea; }
+    .comparison-table th { color:#bfc9dc; font-weight:700; background:rgba(255,255,255,.025); }
+    .comparison-table td { color:#aab6cb; }
+    .comparison-table tr:last-child td { border-bottom:0; }
+    .comparison-check { color:#75d8ae!important; font-weight:700; }
+    .subscription-layout { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr); gap:14px; }
+    .subscription-card { border:1px solid var(--border); border-radius:16px; background:linear-gradient(145deg,rgba(23,35,57,.95),rgba(14,22,37,.95)); padding:20px; }
+    .subscription-card h2,.subscription-card h3 { margin:0 0 14px; font:700 15px Manrope,sans-serif; }
+    .subscription-plan-head { display:flex; justify-content:space-between; align-items:flex-start; gap:15px; }
+    .subscription-plan-head h2 { margin:0 0 5px; font-size:20px; }
+    .subscription-plan-head p { margin:0; color:var(--muted); font-size:11px; }
+    .status-tag { padding:5px 9px; border:1px solid rgba(255,255,255,.08); border-radius:20px; color:#c9d2e0; font-size:10px; white-space:nowrap; }
+    .status-tag.active { background:rgba(101,215,165,.1); color:#75d8ae; }
+    .subscription-detail-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:19px 0; }
+    .subscription-detail { padding:11px; border:1px solid var(--border); border-radius:10px; background:rgba(8,13,24,.35); }
+    .subscription-detail span { display:block; margin-bottom:5px; color:var(--muted); font-size:9px; }
+    .subscription-detail strong { font-size:11px; font-weight:600; }
+    .subscription-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .subscription-feature-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:0; padding:0; list-style:none; }
+    .subscription-feature-list li { color:#bec9da; font-size:11px; }
+    .subscription-feature-list li::before { content:"✓"; color:#75d8ae; margin-right:7px; }
+    .usage-list { display:grid; gap:17px; }
+    .usage-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:7px; font-size:11px; }
+    .usage-head span { color:var(--muted); }
+    .usage-track { height:7px; overflow:hidden; border-radius:9px; background:#202d43; }
+    .usage-track span { display:block; height:100%; border-radius:9px; background:linear-gradient(90deg,#648bff,#8b72ff); transition:width .25s; }
+    .usage-caption { margin:6px 0 0; color:#74839a; font-size:9px; }
+    .billing-list { display:grid; }
+    .billing-row { display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); font-size:10px; }
+    .billing-row:last-child { border-bottom:0; }
+    .billing-row span { color:var(--muted); }
+    .billing-empty { padding:20px 0; color:var(--muted); font-size:11px; text-align:center; }
+    .preview-banner { margin:0 0 20px; padding:11px 13px; border:1px solid rgba(245,184,107,.2); border-radius:11px; background:rgba(245,184,107,.055); color:#e7c596; font-size:11px; line-height:1.55; }
+    .modal-plan-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0; }
+    .modal-plan-option { padding:13px; border:1px solid var(--border); border-radius:11px; background:#121d2e; }
+    .modal-plan-option strong { display:block; margin-bottom:5px; font-size:12px; }
+    .modal-plan-option span { color:var(--muted); font-size:10px; line-height:1.5; }
+    .modal-copy { color:#b6c1d3; font-size:12px; line-height:1.6; }
+    .usage-setting-panel { max-width:720px; margin-top:14px; }
+    .briefing-hero { position:relative; overflow:hidden; margin-bottom:18px; padding:24px; border:1px solid rgba(100,139,255,.24); border-radius:18px; background:radial-gradient(circle at 90% 15%,rgba(139,114,255,.18),transparent 34%),linear-gradient(125deg,#14213a,#111b2d 68%,#131a30); }
+    .briefing-hero::after { content:""; position:absolute; width:190px;height:190px;right:-60px;bottom:-120px;border-radius:50%;background:rgba(100,139,255,.12);filter:blur(4px); }
+    .briefing-hero h1 { margin:0 0 7px;font:700 clamp(23px,3vw,32px) Manrope,sans-serif;letter-spacing:-.7px }
+    .briefing-hero p { margin:0;color:#aab8cf;font-size:12px }
+    .briefing-hero .briefing-date { display:inline-flex;align-items:center;gap:7px;margin-top:18px;color:#c3cee0;font-size:10px }
+    .briefing-summary { display:inline-flex;align-items:center;gap:8px;margin-top:15px;padding:8px 11px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(5,11,22,.24);color:#e1e8f5;font-size:11px }
+    .briefing-grid { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:14px }
+    .briefing-panel { min-width:0;padding:17px;border:1px solid var(--border);border-radius:15px;background:rgba(18,29,46,.65) }
+    .briefing-panel h2 { margin:0 0 13px;font:700 15px Manrope,sans-serif }
+    .briefing-event { display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-top:1px solid var(--border) }
+    .briefing-event:first-of-type { border-top:0;padding-top:0 }
+    .briefing-event-icon { flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:rgba(100,139,255,.1);color:#93abff }
+    .briefing-event-icon svg { width:16px }
+    .briefing-event-content { flex:1;min-width:0 }
+    .briefing-event-content strong { display:block;margin:1px 0 4px;font-size:11px }
+    .briefing-event-content p { margin:0;color:var(--muted);font-size:10px;line-height:1.55 }
+    .briefing-meta { display:flex;align-items:center;gap:7px;margin-top:7px;color:#7f8da5;font-size:9px }
+    .priority-pill { display:inline-flex;align-items:center;padding:3px 7px;border-radius:20px;background:rgba(255,255,255,.05);color:#b4c0d3;font-size:8px;text-transform:uppercase;letter-spacing:.5px }
+    .priority-pill.high,.priority-pill.urgent { background:rgba(255,126,126,.1);color:#ffaaaa }
+    .priority-pill.medium { background:rgba(245,184,107,.1);color:#f5c984 }
+    .briefing-empty { padding:24px 12px;text-align:center;color:var(--muted) }
+    .briefing-empty i { width:40px;height:40px;display:grid;place-items:center;margin:0 auto 10px;border-radius:12px;background:rgba(101,215,165,.09);color:var(--green) }
+    .briefing-empty strong { display:block;margin-bottom:5px;color:#e5eaf3;font-size:13px }
+    .briefing-empty p { margin:0;font-size:10px }
+    .briefing-event-actions { display:flex;gap:5px;margin-left:auto }
+    .briefing-event-actions button,.notification-actions button { padding:5px 7px;border:1px solid var(--border);border-radius:7px;background:#121d2e;color:#aab6cb;font-size:9px }
+    .notification-list { display:grid;gap:8px }
+    .notification-item { display:flex;gap:10px;align-items:flex-start;padding:11px;border:1px solid var(--border);border-radius:11px;background:rgba(9,15,26,.42) }
+    .notification-item.unread { border-color:rgba(100,139,255,.28);background:rgba(100,139,255,.045) }
+    .notification-item>div:nth-child(2) { flex:1;min-width:0 }
+    .notification-item strong { display:block;margin-bottom:4px;font-size:11px }
+    .notification-item p { margin:0;color:var(--muted);font-size:10px;line-height:1.5 }
+    .notification-item time { display:block;margin-top:6px;color:#76849b;font-size:9px }
+    .notification-actions { display:flex;gap:5px;flex-wrap:wrap;margin-top:8px }
+    .notification-count { display:none;min-width:15px;height:15px;padding:0 4px;border-radius:10px;background:#ef777f;color:white;font-size:9px;line-height:15px;text-align:center }
+    .notification-count.visible { display:inline-block }
+    .notification-settings { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px }
+    .notification-pref { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px;border:1px solid var(--border);border-radius:10px;background:rgba(8,13,24,.25) }
+    .notification-pref strong { display:block;font-size:10px }
+    .notification-pref span { display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4 }
+    .notification-pref input[type=checkbox] { width:16px;height:16px;accent-color:var(--blue) }
+    .notification-config-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px }
+    .notification-config-grid .form-group { margin:0 }
+    .push-state { color:var(--muted);font-size:10px;line-height:1.5 }
+    .section-actions { display:flex;flex-wrap:wrap;gap:8px;margin-top:13px }
+    .mobile-head { display:none; }
+    @media (max-width:1050px) { .stats { grid-template-columns:repeat(2,1fr); } .recent-grid,.library-grid { grid-template-columns:repeat(2,1fr); } .dashboard-bottom { grid-template-columns:1fr; } }
+    @media (max-width:1050px) { .vault-grid,.warranty-grid,.receipts-grid,.expiration-grid { grid-template-columns:repeat(2,1fr); } .category-grid { grid-template-columns:repeat(3,1fr); } .metric-row { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:760px) {
+      .app,.app.authenticated { display:block; } .sidebar { width:238px; transform:translateX(-100%); transition:.22s; } .sidebar.open { transform:translateX(0); }
+      .main { padding:0 16px 40px; } .mobile-head { height:64px; display:flex; align-items:center; justify-content:space-between; }
+      .topbar { display:none; } .welcome h1 { font-size:24px; } .stats { grid-template-columns:repeat(2,1fr); } .recent-grid,.library-grid { grid-template-columns:1fr; }
+      .quick-grid { grid-template-columns:repeat(2,1fr); } .dashboard-bottom { grid-template-columns:1fr; } .form-row { grid-template-columns:1fr; }
+      .chat-layout { height:calc(100vh - 175px); } .welcome { margin-top:8px; }
+      .vault-grid,.warranty-grid,.receipts-grid,.expiration-grid,.category-grid,.metric-row { grid-template-columns:1fr; }
+      .plan-grid { grid-template-columns:1fr; gap:18px; }
+      .pricing-card { padding:20px; }
+      .subscription-layout { grid-template-columns:1fr; }
+      .subscription-detail-grid { grid-template-columns:1fr 1fr; }
+      .subscription-feature-list { grid-template-columns:1fr; }
+      .comparison-wrap { margin-top:30px; }
+      .briefing-grid { grid-template-columns:1fr; }
+      .notification-settings,.notification-config-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-brand"><div class="brand-mark"><i data-lucide="brain"></i></div><span>Rememberly</span></div>
+      <div class="auth-tabs"><button class="auth-tab active" data-auth="login">Log in</button><button class="auth-tab" data-auth="register">Create account</button></div>
+      <div class="form-group" id="registerNameGroup" style="display:none"><label>Full name</label><input id="authName" autocomplete="name" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div>
+      <button class="auth-submit" id="authSubmit">Log in</button>
+      <p class="auth-error" id="authError"></p>
+    </div>
+  </div>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark"><i data-lucide="brain"></i></div><span>Rememberly</span></div>
+      <button class="new-btn" id="newMemory"><i data-lucide="plus" style="width:17px"></i> New Memory</button>
+      <nav class="nav">
+        <button class="nav-item active" data-page="home"><i data-lucide="house"></i><span>Home</span></button>
+        <button class="nav-item" data-page="memories"><i data-lucide="layers-3"></i><span>All Memories</span></button>
+        <button class="nav-item" data-page="assistant"><i data-lucide="sparkles"></i><span>AI Assistant</span></button>
+        <button class="nav-item" data-page="vault"><i data-lucide="shield-check"></i><span>Document Vault</span></button>
+        <button class="nav-item" data-page="warranties"><i data-lucide="badge-check"></i><span>Warranty Tracker</span></button>
+        <button class="nav-item" data-page="receipts"><i data-lucide="receipt-text"></i><span>Receipts</span></button>
+        <button class="nav-item" data-page="expiration"><i data-lucide="calendar-clock"></i><span>Expirations</span></button>
+        <button class="nav-item" data-page="collections"><i data-lucide="folder"></i><span>Collections</span></button>
+        <button class="nav-item" data-page="reminders"><i data-lucide="clock-3"></i><span>Reminders</span></button>
+        <button class="nav-item" data-page="briefing"><i data-lucide="sunrise"></i><span>Daily Briefing</span></button>
+        <button class="nav-item" data-page="favorites"><i data-lucide="star"></i><span>Favorites</span></button>
+        <button class="nav-item" data-page="trash"><i data-lucide="trash-2"></i><span>Trash</span></button>
+        <div class="nav-divider"></div>
+        <button class="nav-item" data-page="pricing"><i data-lucide="sparkles"></i><span>Plans & Pricing</span></button>
+        <button class="nav-item" data-page="subscription"><i data-lucide="credit-card"></i><span>My Subscription</span></button>
+      </nav>
+      <div class="side-bottom">
+        <div class="plan-card"><strong id="sidebarPlanName">Free plan</strong><p id="planUsage">0 of 50 memories</p><div class="usage"><span id="sidebarUsageBar"></span></div></div>
+        <button class="nav-item" data-page="settings"><i data-lucide="settings"></i><span>Settings</span></button>
+        <div class="profile"><div class="avatar" id="profileAvatar">U</div><div class="profile-info"><strong id="profileName">User</strong><span id="profileEmail"></span></div><button class="logout-btn" id="logoutBtn" aria-label="Log out" title="Log out"><i data-lucide="log-out" style="width:14px"></i></button></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="mobile-head"><button class="icon-btn" id="menuBtn"><i data-lucide="menu"></i></button><div class="brand" style="margin:0;padding:0"><div class="brand-mark" style="width:30px;height:30px"><i data-lucide="brain" style="width:17px"></i></div><span>Rememberly</span></div><button class="icon-btn" id="mobileNew"><i data-lucide="plus"></i></button></div>
+      <div class="topbar"><div class="top-actions"><button class="icon-btn" id="topSearch" aria-label="Search"><i data-lucide="search"></i></button><button class="icon-btn" id="notificationCenterBtn" aria-label="Notifications" title="Notifications"><i data-lucide="bell"></i><span class="notification-count" id="notificationCount">0</span></button></div></div>
+      <section class="content-page active" id="page-home">
+        <div class="welcome"><div><h1 id="greeting">Good evening</h1><p>Your mind is clear. Everything important is remembered.</p></div></div>
+        <button class="global-search" id="globalSearch"><i data-lucide="search"></i><input placeholder="Search anything in your memories..." readonly><span class="key">⌘ K</span></button>
+        <div class="stats" id="stats"></div>
+        <div class="section-head"><h2>Recent memories</h2><button class="text-btn" data-open-page="memories">View all</button></div>
+        <div class="recent-grid" id="recentGrid"></div>
+        <div class="dashboard-bottom">
+          <section class="panel"><div class="section-head" style="height:34px"><h2>Quick capture</h2></div><div class="quick-grid">
+            <button class="quick" data-capture="text"><i data-lucide="notebook-text"></i><span>Write a note</span></button>
+            <button class="quick" data-capture="voice"><i data-lucide="mic"></i><span>Record voice</span></button>
+            <button class="quick" data-capture="image"><i data-lucide="image"></i><span>Upload image</span></button>
+            <button class="quick" data-capture="link"><i data-lucide="link"></i><span>Save a link</span></button>
+          </div></section>
+          <section class="panel"><div class="section-head" style="height:34px"><h2>Upcoming reminders</h2><button class="text-btn" data-open-page="reminders">View all</button></div><div id="reminderPreview"></div></section>
+        </div>
+      </section>
+      <section class="content-page" id="page-memories">
+        <div class="page-title"><h1>All Memories</h1><button class="primary-btn" id="addMemoryPage"><i data-lucide="plus" style="width:15px"></i> New Memory</button></div>
+        <div class="toolbar"><div class="field search-small"><i data-lucide="search"></i><input id="memorySearch" placeholder="Search memories..."></div><select class="field" id="categoryFilter"><option value="">All categories</option><option>Work</option><option>Ideas</option><option>Personal</option><option>Shopping</option><option>Travel</option></select><button class="icon-btn" id="viewToggle" title="Toggle view"><i data-lucide="layout-grid"></i></button></div>
+        <div class="library-grid" id="libraryGrid"></div>
+      </section>
+      <section class="content-page" id="page-assistant">
+        <div class="chat-layout"><div class="chat-head"><h2>Your personal memory assistant</h2><p>Ask anything. Remember everything.</p></div><div class="chat-body" id="chatBody"><div class="message ai"><div class="ai-mark"><i data-lucide="sparkles" style="width:15px"></i></div><div><strong id="chatGreeting">Hello.</strong><br>Your memories are ready. What would you like to remember or find?<div class="suggestions"><button class="suggestion">What did I save yesterday?</button><button class="suggestion">Find my restaurant recommendations</button><button class="suggestion">What are my latest business ideas?</button><button class="suggestion">What did I want to buy?</button></div></div></div></div><div class="chat-input"><input id="chatInput" placeholder="Ask about anything you've saved..."><button class="send-btn" id="chatSend"><i data-lucide="arrow-up"></i></button></div></div>
+      </section>
+      <section class="content-page" id="page-collections"><div class="page-title"><h1>Collections</h1><button class="primary-btn" id="newCollection">+ New collection</button></div><div class="empty-page"><div><i data-lucide="folder-plus"></i><h2>Organize by collection</h2><p>Create collections to group related memories.</p></div></div></section>
+      <section class="content-page" id="page-vault">
+        <div class="page-title"><div><h1>Document Vault</h1><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Everything important, safely stored.</p></div><button class="primary-btn" id="uploadDocument"><i data-lucide="upload" style="width:15px"></i> Upload documents</button></div>
+        <div class="category-grid" id="vaultCategories"></div>
+        <div class="toolbar"><div class="field search-small"><i data-lucide="search"></i><input id="documentSearch" placeholder="Search documents, tags, stores or text..."></div><select class="field" id="documentCategoryFilter"><option value="">All categories</option><option>Personal Documents</option><option>Financial Documents</option><option>Receipts</option><option>Warranties</option><option>Contracts</option><option>Insurance</option><option>Travel</option><option>Education</option><option>Health</option><option>Other</option></select><button class="icon-btn" id="vaultGridToggle" title="Toggle view"><i data-lucide="layout-grid"></i></button></div>
+        <div class="vault-grid" id="vaultGrid"></div>
+      </section>
+      <section class="content-page" id="page-warranties">
+        <div class="page-title"><div><h1>Warranty Tracker</h1><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Keep every purchase protected.</p></div><button class="primary-btn" id="addWarranty">+ Add warranty</button></div>
+        <div class="toolbar"><select class="field" id="warrantyFilter"><option value="all">All warranties</option><option value="active">Active</option><option value="soon">Expiring soon</option><option value="expired">Expired</option></select></div>
+        <div class="warranty-grid" id="warrantyGrid"></div>
+      </section>
+      <section class="content-page" id="page-receipts">
+        <div class="page-title"><div><h1>Receipts</h1><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Your purchase history, clearly organized.</p></div><button class="primary-btn" id="addReceipt">+ Add receipt</button></div>
+        <div class="metric-row" id="receiptMetrics"></div>
+        <div class="toolbar"><div class="field search-small"><i data-lucide="search"></i><input id="receiptSearch" placeholder="Search store, product or category..."></div><select class="field" id="receiptPeriod"><option value="all">All time</option><option value="month">This month</option><option value="year">This year</option></select></div>
+        <div class="receipts-grid" id="receiptGrid"></div>
+      </section>
+      <section class="content-page" id="page-expiration">
+        <div class="page-title"><div><h1>Expiration Tracker</h1><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Upcoming dates that matter.</p></div><button class="primary-btn" id="addExpiration">+ Add date</button></div>
+        <div class="panel"><div id="expirationTimeline"></div></div>
+      </section>
+      <section class="content-page" id="page-reminders"><div class="page-title"><h1>Reminders</h1><button class="primary-btn" id="newReminder">+ New reminder</button></div><div class="panel" id="remindersPage"></div></section>
+      <section class="content-page" id="page-favorites"><div class="page-title"><h1>Favorites</h1></div><div class="library-grid" id="favoritesGrid"></div></section>
+      <section class="content-page" id="page-trash"><div class="page-title"><h1>Trash</h1></div><div class="empty-page"><div><i data-lucide="trash-2"></i><h2>Trash is empty</h2><p>Deleted memories will appear here.</p></div></div></section>
+      <section class="content-page" id="page-pricing">
+        <div id="pricingPreviewBanner"></div>
+        <div class="pricing-intro"><h1>Choose the perfect plan for your mind.</h1><p>Remember everything. Organize your life. Unlock your full potential.</p><div class="billing-note">Prices in USD, billed monthly. Cancel anytime.</div></div>
+        <div class="plan-grid" id="pricingCards"></div>
+        <div class="comparison-wrap"><h2>Compare every feature</h2><p>Clear limits, no hidden fees. Monthly recurring charges with cancellation available anytime.</p><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>Feature</th><th>Free</th><th>Pro</th><th>Premium</th></tr></thead><tbody id="comparisonRows"></tbody></table></div></div>
+      </section>
+      <section class="content-page" id="page-subscription">
+        <div class="page-title"><div><h1>My Subscription</h1><p style="margin:6px 0 0;color:var(--muted);font-size:12px">Manage your plan, usage, and billing.</p></div><button class="secondary-btn" id="refreshSubscription"><i data-lucide="refresh-cw" style="width:13px;vertical-align:middle"></i> Refresh status</button></div>
+        <div id="subscriptionPreviewBanner"></div>
+        <div class="subscription-layout">
+          <section class="subscription-card"><div class="subscription-plan-head"><div><h2 id="currentPlanTitle">Free plan</h2><p id="currentPlanDescription">$0 / month</p></div><span class="status-tag" id="subscriptionStatus">Free</span></div><div class="subscription-detail-grid"><div class="subscription-detail"><span>Billing period</span><strong id="subscriptionPeriod">No billing period</strong></div><div class="subscription-detail"><span>Next renewal</span><strong id="subscriptionRenewal">—</strong></div><div class="subscription-detail"><span>Cancellation</span><strong id="subscriptionCancellation">Anytime</strong></div></div><div class="subscription-actions" id="subscriptionActions"></div></section>
+          <section class="subscription-card"><h3>Included with your plan</h3><ul class="subscription-feature-list" id="subscriptionFeatures"></ul></section>
+          <section class="subscription-card"><h3>Plan & Usage</h3><div class="usage-list" id="subscriptionUsage"></div></section>
+          <section class="subscription-card"><h3>Billing history</h3><div class="billing-list" id="billingHistory"></div></section>
+        </div>
+      </section>
+      <section class="content-page" id="page-briefing">
+        <div class="briefing-hero"><h1 id="briefingGreeting">Good morning.</h1><p>Here's what matters today.</p><div class="briefing-date"><i data-lucide="calendar-days" style="width:13px"></i><span id="briefingDate"></span></div><div class="briefing-summary" id="briefingSummary"></div></div>
+        <div id="briefingPreviewBanner"></div>
+        <div class="briefing-grid">
+          <section class="briefing-panel"><h2>Today's priorities</h2><div id="briefingToday"></div></section>
+          <section class="briefing-panel"><h2>Coming up · 7 days</h2><div id="briefingUpcoming"></div></section>
+          <section class="briefing-panel"><h2>Recent updates</h2><div id="briefingRecent"></div></section>
+          <section class="briefing-panel"><h2>Completed</h2><div id="briefingCompleted"></div></section>
+          <section class="briefing-panel" style="grid-column:1/-1"><div class="section-head"><h2>Notification history</h2><div><button class="text-btn" id="markAllNotificationsRead">Mark all read</button><button class="text-btn" id="deleteNotificationHistory">Clear history</button></div></div><div class="notification-list" id="notificationHistory"></div></section>
+          <section class="briefing-panel" style="grid-column:1/-1"><h2>Recent briefings</h2><div class="notification-list" id="briefingHistory"></div></section>
+        </div>
+      </section>
+      <section class="content-page" id="page-settings">
+        <div class="page-title"><h1>Settings</h1></div>
+        <div class="panel" style="max-width:720px"><h3 style="margin:0 0 16px">Profile</h3><div class="form-row"><div class="form-group"><label>Full name</label><input id="settingsName"></div><div class="form-group"><label>Email</label><input id="settingsEmail" type="email"></div></div><div class="form-group"><label>Appearance</label><select><option>Dark</option><option>System</option></select></div><button class="primary-btn" id="saveSettings">Save changes</button></div>
+        <div class="panel usage-setting-panel"><div class="section-head"><h2>Plan & Usage</h2><button class="text-btn" data-open-page="subscription">Manage subscription</button></div><div class="usage-list" id="settingsUsage"></div></div>
+        <section class="panel usage-setting-panel" id="notificationPreferences"><div class="section-head"><div><h2>Notifications & Daily Briefing</h2><p style="margin:5px 0 0;color:var(--muted);font-size:10px">A quiet, useful summary only when something needs your attention.</p></div></div>
+          <label class="notification-pref" style="margin-bottom:12px"><span><strong>Daily Briefing</strong><span>Send a briefing only when an important item is approaching.</span></span><input id="dailyBriefingEnabled" type="checkbox" checked></label>
+          <div class="notification-config-grid">
+            <div class="form-group"><label for="briefingTime">Daily briefing time</label><input id="briefingTime" type="time"></div>
+            <div class="form-group"><label for="briefingTimezone">Local timezone (IANA)</label><input id="briefingTimezone" placeholder="Europe/Belgrade"></div>
+            <div class="form-group"><label for="quietStart">Quiet hours start</label><input id="quietStart" type="time"></div>
+            <div class="form-group"><label for="quietEnd">Quiet hours end</label><input id="quietEnd" type="time"></div>
+            <div class="form-group"><label for="notificationFrequency">Notification frequency</label><select id="notificationFrequency"><option value="daily_briefing">Daily briefing</option><option value="important_only">Only important updates</option><option value="critical_only">Critical notifications only</option><option value="weekly_summary">Weekly summary</option></select></div>
+          </div>
+          <div class="notification-settings" id="notificationCategorySettings" style="margin-top:13px"></div>
+          <label class="notification-pref" style="margin-top:11px"><span><strong>Optional email updates</strong><span>Email delivery is not active until a provider is configured. This preference records your consent only.</span></span><input id="emailNotificationsEnabled" type="checkbox"></label>
+          <div class="section-actions"><p class="push-state" id="notificationPlanHint"></p><button class="secondary-btn" id="notificationUpgradeButton" style="display:none">Explore plan upgrade</button></div>
+          <div class="section-actions"><button class="primary-btn" id="saveNotificationSettings">Save notification preferences</button><button class="secondary-btn" id="enablePushNotifications">Enable browser push</button><button class="secondary-btn" id="disablePushNotifications">Disable browser push</button></div>
+          <p class="push-state" id="pushStatus"></p><p class="push-state">Email notifications are not configured. Rememberly will not email you unless an email provider is configured and you explicitly opt in.</p>
+        </section>
+      </section>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="memoryModal"><div class="modal"><div class="modal-head"><h2 id="modalTitle">New memory</h2><button class="icon-btn" id="closeModal"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="capture-tabs" id="captureTabs"><button class="capture-tab active" data-type="text">Text</button><button class="capture-tab" data-type="voice">Voice</button><button class="capture-tab" data-type="image">Image</button><button class="capture-tab" data-type="link">Link</button></div><div id="captureText"><div class="form-group"><label>Title</label><input id="memoryTitle" placeholder="Give this memory a clear title"></div><div class="form-group"><label>Content</label><textarea id="memoryContent" placeholder="What do you want to remember?"></textarea></div><div class="form-row"><div class="form-group"><label>Category</label><select id="memoryCategory"><option>Personal</option><option>Work</option><option>Ideas</option><option>Shopping</option><option>Travel</option></select></div><div class="form-group"><label>Tags</label><input id="memoryTags" placeholder="e.g. restaurant, summer"></div></div></div><div id="captureVoice" style="display:none"><div class="drop-zone" id="voiceZone"><div><i data-lucide="mic"></i><strong>Tap to start recording</strong><span id="voiceStatus">Voice transcription will appear here</span></div></div></div><div id="captureImage" style="display:none"><label class="drop-zone" id="dropZone"><input type="file" accept="image/*,.pdf" id="fileInput" style="display:none"><div><i data-lucide="image-plus"></i><strong>Drop a file here or browse</strong><span id="fileStatus">Images and PDFs up to 10 MB</span></div></label></div><div id="captureLink" style="display:none"><div class="form-group"><label>Website URL</label><input id="linkUrl" type="url" placeholder="https://example.com"></div><div class="form-group"><label>Title</label><input id="linkTitle" placeholder="Optional title"></div></div></div><div class="modal-actions"><button class="secondary-btn" id="cancelModal">Cancel</button><button class="primary-btn" id="saveMemory">Save memory</button></div></div></div>
+  <div class="modal-backdrop" id="documentModal"><div class="modal" style="width:min(720px,100%)"><div class="modal-head"><h2 id="documentModalTitle">Upload document</h2><button class="icon-btn" id="closeDocumentModal"><i data-lucide="x"></i></button></div><div class="modal-body">
+    <label class="document-upload" id="documentDrop"><input type="file" id="documentFiles" multiple accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx" style="display:none"><span><i data-lucide="cloud-upload" style="width:28px;height:28px"></i><strong>Drop documents here or browse</strong><span style="font-size:11px">PDF, JPG, PNG and supported documents · 10 MB each</span></span></label>
+    <p style="margin:8px 0 0;color:var(--muted);font-size:10px">OCR and external AI are not connected. Review all metadata manually; sensitive files are never sent to an external provider from this local version.</p>
+    <div class="upload-progress" id="documentProgress"><span id="documentProgressBar"></span></div>
+    <div class="form-row" style="margin-top:16px"><div class="form-group"><label>File name</label><input id="documentName" placeholder="Document name"></div><div class="form-group"><label>Category</label><select id="documentCategory"><option>Personal Documents</option><option>Financial Documents</option><option>Receipts</option><option>Warranties</option><option>Contracts</option><option>Insurance</option><option>Travel</option><option>Education</option><option>Health</option><option>Other</option></select></div></div>
+    <div class="form-group"><label>Custom category <span style="color:var(--muted)">(optional)</span></label><input id="documentCustomCategory" placeholder="e.g. Property, Vehicles, Subscriptions"></div>
+    <div class="form-group"><label>Description</label><textarea id="documentDescription" style="min-height:70px" placeholder="Optional description"></textarea></div>
+    <div class="form-row"><div class="form-group"><label>Tags</label><input id="documentTags" placeholder="passport, travel, 2026"></div><div class="form-group"><label>Expiration / renewal date</label><input id="documentExpiration" type="date"></div></div>
+    <div class="form-row"><div class="form-group"><label>Purchase date</label><input id="documentPurchaseDate" type="date"></div><div class="form-group"><label>Warranty expiration</label><input id="documentWarrantyDate" type="date"></div></div>
+    <div class="form-row"><div class="form-group"><label>Store / issuer</label><input id="documentStore" placeholder="Store or organization"></div><div class="form-group"><label>Reminder</label><select id="documentReminder"><option value="">No reminder</option><option value="30">30 days before</option><option value="14">14 days before</option><option value="7">7 days before</option><option value="1">1 day before</option></select></div></div>
+  </div><div class="modal-actions"><button class="secondary-btn" id="cancelDocumentModal">Cancel</button><button class="primary-btn" id="saveDocument">Review & save</button></div></div></div>
+  <div class="modal-backdrop" id="subscriptionModal"><div class="modal" style="width:min(500px,100%)"><div class="modal-head"><h2 id="subscriptionModalTitle">Upgrade your plan</h2><button class="icon-btn" id="closeSubscriptionModal"><i data-lucide="x"></i></button></div><div class="modal-body" id="subscriptionModalBody"></div><div class="modal-actions"><button class="secondary-btn" id="subscriptionModalCancel">Maybe later</button><button class="primary-btn" id="subscriptionModalConfirm">Continue</button></div></div></div>
+  <div class="modal-backdrop" id="reminderModal"><div class="modal" style="width:min(460px,100%)"><div class="modal-head"><h2>New personal reminder</h2><button class="icon-btn" id="closeReminderModal"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label for="reminderTitle">What should Rememberly remind you about?</label><input id="reminderTitle" maxlength="160" placeholder="e.g. Call the dentist"></div><div class="form-group"><label for="reminderDate">Date</label><input id="reminderDate" type="date"></div><p class="push-state">We'll only surface it near the date. Nothing is sent just because a new day starts.</p></div><div class="modal-actions"><button class="secondary-btn" id="cancelReminder">Cancel</button><button class="primary-btn" id="saveReminder">Save reminder</button></div></div></div>
+  <div class="search-overlay" id="searchOverlay"><div class="search-box"><div class="search-box-head"><i data-lucide="search"></i><input id="overlaySearch" placeholder="Search titles, content, tags, and collections..."><span class="key">ESC</span></div><div class="search-results" id="searchResults"></div></div></div>
+  <div class="toast-wrap" id="toastWrap"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script>
+    let currentUser=null, authMode="login";
+    let memories=[];
+    let documents=[];
+    let pendingDocumentFiles=[];
+    let editingDocumentId=null;
+    let captureType="text", editingId=null, viewList=false;
+    const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+    const appConfig=window.rememberlyConfig||{};
+    const supabaseClient=window.supabase?.createClient&&appConfig.supabaseUrl&&appConfig.supabaseAnonKey
+      ?window.supabase.createClient(appConfig.supabaseUrl,appConfig.supabaseAnonKey):null;
+    let subscriptionRecord=null, billingHistory=[];
+    let billingReadiness={billing_ready:false,mode:"unconfigured",missing_configuration:[],checked:false};
+    let notificationSettings=null,notificationRows=[],briefingRows=[],briefingEvents=[];
+    let notificationChannel=null;
+    const DEFAULT_NOTIFICATION_SETTINGS=()=>{
+      const categories={document_expiration:true,warranty:true,bill:true,subscription_renewal:true,travel:true,reminder:true,appointment:true};
+      return {daily_briefing_enabled:true,briefing_time:"08:00",timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC",quiet_hours_start:"22:00",quiet_hours_end:"07:00",notification_categories:categories,notification_frequency:"daily_briefing",push_enabled:false,email_enabled:false};
+    };
+    const NOTIFICATION_CATEGORIES=[
+      ["document_expiration","Document expirations","Passport, ID and other dated documents"],
+      ["warranty","Warranty notifications","Coverage deadlines and product protection"],
+      ["bill","Bill payments","Bills and payment due dates"],
+      ["subscription_renewal","Subscription renewals","Upcoming service renewals"],
+      ["travel","Travel","Trips and travel dates"],
+      ["reminder","Personal reminders","Your personal tasks and dates"],
+      ["appointment","Appointments","Meetings and appointments"]
+    ];
+    let checkoutReturn=new URLSearchParams(location.search).get("checkout");
+    if(checkoutReturn)history.replaceState(null,"",location.pathname+location.hash);
+    const PLAN_DETAILS={
+      free:{name:"Free",price:0,memoryLimit:50,documentLimit:5,storageLimit:0,features:["Up to 50 saved memories","Basic text notes","Basic categories and tags","Basic keyword search","Up to 5 document uploads","Basic reminders","1 collection","Standard support"]},
+      pro:{name:"Pro",price:5,memoryLimit:2000,documentLimit:Infinity,storageLimit:10*1024**3,features:["Up to 2,000 saved memories","Unlimited text notes","AI-powered memory organization","AI-powered natural language search","Voice-to-text memory capture","Up to 10 GB document storage","Document Vault","Receipt management","Warranty tracking","Unlimited collections","Advanced reminders","Smart document categorization","Priority support"]},
+      premium:{name:"Premium",price:9.99,memoryLimit:Infinity,documentLimit:Infinity,storageLimit:50*1024**3,features:["Unlimited saved memories, subject to fair-use limits","All Pro features","Up to 50 GB document storage","Advanced AI memory assistant","AI document recognition and OCR","Advanced semantic search","Automatic document metadata extraction","Advanced warranty management","Subscription tracking","Travel organization","Personal inventory","Advanced analytics","Priority processing","Premium support"]}
+    };
+    const COMPARISON_ROWS=[
+      ["Saved memories","Up to 50","Up to 2,000","Unlimited, fair use"],
+      ["AI organization","—","Included","Included"],
+      ["AI assistant","Basic local search","AI organization","Advanced AI assistant"],
+      ["Natural language search","Basic keyword search","AI-powered search","Advanced semantic search"],
+      ["Voice capture","—","Voice-to-text","Voice-to-text"],
+      ["Document uploads","Up to 5","Unlimited","Unlimited"],
+      ["Document storage","Local preview only","Up to 10 GB","Up to 50 GB"],
+      ["OCR recognition","—","—","Included"],
+      ["Warranty tracker","—","Included","Advanced"],
+      ["Receipt manager","—","Included","Included"],
+      ["Subscription tracker","—","—","Included"],
+      ["Travel organizer","—","—","Included"],
+      ["Personal inventory","—","—","Included"],
+      ["Collections","1","Unlimited","Unlimited"],
+      ["Advanced reminders","—","Included","Included"],
+      ["Analytics","—","—","Advanced"],
+      ["Support","Standard","Priority","Premium"]
+    ];
+    const FEATURE_PLAN={ai_organization:"pro",ai_search:"pro",voice_capture:"pro",document_vault:"pro",receipt_manager:"pro",warranty_tracker:"pro",unlimited_collections:"pro",advanced_reminders:"pro",smart_document_categorization:"pro",daily_briefing:"pro",notification_customization:"premium",weekly_summary:"premium",advanced_ai_assistant:"premium",advanced_ocr:"premium",semantic_search:"premium",subscription_tracker:"premium",travel_organizer:"premium",personal_inventory:"premium",advanced_analytics:"premium"};
+    const planForStatus=()=>subscriptionRecord&&["active","trialing"].includes(subscriptionRecord.status)?"proOrPremium": "free";
+    function currentPlan(){
+      if(planForStatus()!=="proOrPremium"||(subscriptionRecord?.current_period_end&&new Date(subscriptionRecord.current_period_end)<=new Date()))return "free";
+      return subscriptionRecord.plan==="premium"?"premium":"pro";
+    }
+    function hasFeature(user,feature){
+      const required=FEATURE_PLAN[feature];
+      if(!required)return true;
+      const plan=currentPlan();
+      return required==="pro"?["pro","premium"].includes(plan):plan==="premium";
+    }
+    async function requireFeature(feature){
+      if(!supabaseClient){
+        if(hasFeature(currentUser,feature))return true;
+        showUpgrade(feature);return false;
+      }
+      try{
+        const {data,error}=await supabaseClient.rpc("user_has_feature",{p_feature:feature});
+        if(error){toast(error.message||"Could not verify access to this feature.");return false}
+        if(data===true)return true;
+        showUpgrade(feature);return false;
+      }catch(error){toast(error instanceof Error?error.message:"Could not verify access to this feature.");return false}
+    }
+    async function checkUsageAllowance(resourceType,requested){
+      if(!supabaseClient)return true;
+      try{
+        const {data,error}=await supabaseClient.rpc("validate_usage_limit",{p_resource_type:resourceType,p_requested:requested});
+        if(error){toast(error.message||"Could not validate this usage limit.");return false}
+        const allowance=Array.isArray(data)?data[0]:data;
+        if(allowance?.allowed===false){
+          showUpgrade(resourceType==="memories"?"memory_limit":"document_vault");
+          return false;
+        }
+        if(!allowance){toast("The usage-limit service returned an invalid response.");return false}
+        return true;
+      }catch(error){toast(error instanceof Error?error.message:"Could not validate this usage limit.");return false}
+    }
+    function getMemoryCount(){return memories.filter(m=>!m.deleted).length}
+    function getStorageUsed(){return documents.reduce((sum,doc)=>sum+(Number(doc.fileSize)||(doc.dataUrl?Math.floor(doc.dataUrl.length*.75):0)),0)}
+    function icon(name){ return `<i data-lucide="${name}"></i>` }
+    function refreshIcons(){ if(window.lucide) lucide.createIcons(); }
+    function memoriesKey(){ return "rememberly_memories:"+currentUser.email; }
+    function save(){ if(currentUser) localStorage.setItem(memoriesKey(),JSON.stringify(memories)); }
+    function documentsKey(){ return "rememberly_documents:"+currentUser.email; }
+    function saveDocuments(){ if(currentUser) localStorage.setItem(documentsKey(),JSON.stringify(documents)); }
+    function esc(s){ return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function formatDate(d){ if(!d)return "No date"; const date=d.includes("T")?new Date(d):new Date(d+"T12:00:00"); return isNaN(date)? "No date":date.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
+    function previewBanner(){
+      if(!supabaseClient)return `<div class="preview-banner"><strong>Development preview:</strong> Billing is not connected yet. Paid plans cannot be activated here. Configure Supabase and Stripe to enable secure checkout and verified subscriptions.</div>`;
+      if(!billingReadiness.billing_ready){
+        const missing=billingReadiness.missing_configuration?.length?` Missing: ${esc(billingReadiness.missing_configuration.join(", "))}.`:"";
+        return `<div class="preview-banner"><strong>Billing setup pending:</strong> Stripe configuration is incomplete. Checkout and paid-plan activation are disabled.${missing}</div>`;
+      }
+      return billingReadiness.mode==="test"?`<div class="preview-banner"><strong>Stripe test mode:</strong> Payments are simulated by Stripe's test environment and are not real charges.</div>`:"";
+    }
+    function renderPricing(){
+      $("#pricingPreviewBanner").innerHTML=previewBanner();
+      $("#pricingCards").innerHTML=Object.entries(PLAN_DETAILS).map(([key,plan])=>{
+        const label=key==="free"?"Get Started":key==="pro"?"Upgrade to Pro":"Get Premium";
+        const badge=key==="pro"?"MOST POPULAR":key==="premium"?"BEST VALUE":"";
+        const isCurrent=currentPlan()===key;
+        return `<article class="pricing-card ${key==="pro"?"featured":""}">${badge?`<span class="plan-badge">${badge}</span>`:""}<h2>${plan.name}</h2><p class="plan-summary">${key==="free"?"For getting started with a clear mind.":key==="pro"?"More room and powerful tools for everyday life.":"Your most capable personal memory workspace."}</p><div class="plan-price"><strong>$${plan.price===0?"0":plan.price.toFixed(2)}</strong><span>/ month</span></div><div class="plan-billing">Monthly recurring charge · Cancel anytime</div><button class="plan-action" data-select-plan="${key}" ${isCurrent?"disabled":""}>${isCurrent?"Current plan":label}</button><ul class="plan-features">${plan.features.map(feature=>`<li>${icon("check")}<span>${esc(feature)}</span></li>`).join("")}</ul></article>`;
+      }).join("");
+      $("#comparisonRows").innerHTML=COMPARISON_ROWS.map(([feature,...values])=>`<tr><td>${esc(feature)}</td>${values.map(value=>`<td class="${value!=="—"?"comparison-check":""}">${esc(value)}</td>`).join("")}</tr>`).join("");
+      refreshIcons();
+    }
+    function usageMarkup(){
+      const plan=currentPlan(), details=PLAN_DETAILS[plan], memoriesUsed=getMemoryCount(), docsUsed=documents.length, storageUsed=getStorageUsed();
+      const memoryCap=Number.isFinite(details.memoryLimit)?details.memoryLimit:"Fair use";
+      const docCap=Number.isFinite(details.documentLimit)?details.documentLimit:"No set count limit";
+      const storageCap=details.storageLimit||0;
+      const storageLabel=storageCap?`${(storageUsed/1024**3).toFixed(2)} GB / ${storageCap/1024**3} GB`:"Not tracked";
+      const storagePercent=storageCap?Math.min(100,storageUsed/storageCap*100):0;
+      const memoryPercent=Number.isFinite(details.memoryLimit)?Math.min(100,memoriesUsed/details.memoryLimit*100):Math.min(100,memoriesUsed/5000*100);
+      const docsPercent=Number.isFinite(details.documentLimit)?Math.min(100,docsUsed/details.documentLimit*100):Math.min(100,docsUsed/100*100);
+      const progress=(label,value,percent,caption)=>`<div><div class="usage-head"><strong>${label}</strong><span>${value}</span></div><div class="usage-track"><span style="width:${percent}%"></span></div><p class="usage-caption">${caption}</p></div>`;
+      return progress("Memories",`${memoriesUsed} / ${typeof memoryCap==="number"?memoryCap:memoryCap}`,memoryPercent,plan==="premium"?"Fair-use policy applies.":"Current count in this browser; production enforcement requires server-backed memory storage.")
+        +progress("Documents",`${docsUsed} / ${docCap}`,docsPercent,plan==="free"?"Free plan allows up to 5 uploaded documents.":"Document counts and storage are shown from this browser.")
+        +progress("Document storage",storageLabel,storagePercent,storageCap?"Estimated from locally stored documents.":"Storage allowance is not available on the Free plan.")
+        +`<div><div class="usage-head"><strong>AI requests</strong><span>Not tracked</span></div><p class="usage-caption">No AI provider or server-side request metering is connected in this version.</p></div>`;
+    }
+    function renderSubscription(){
+      $("#subscriptionPreviewBanner").innerHTML=previewBanner();
+      const plan=currentPlan(), details=PLAN_DETAILS[plan], subscription=subscriptionRecord;
+      const status=subscription?.status||"free";
+      $("#currentPlanTitle").textContent=details.name+" plan";
+      $("#currentPlanDescription").textContent=`$${details.price===0?"0":details.price.toFixed(2)} / month${plan==="free"?" · No charge":""}`;
+      $("#subscriptionStatus").textContent=subscription?.cancel_at_period_end?"Canceling at period end":status==="free"?"Free plan":status.replaceAll("_"," ");
+      $("#subscriptionStatus").classList.toggle("active",["active","trialing"].includes(status)&&!subscription?.cancel_at_period_end);
+      $("#subscriptionPeriod").textContent=subscription?.current_period_start&&subscription?.current_period_end?`${formatDate(subscription.current_period_start)} – ${formatDate(subscription.current_period_end)}`:"No billing period";
+      $("#subscriptionRenewal").textContent=subscription?.current_period_end?formatDate(subscription.current_period_end):"—";
+      $("#subscriptionCancellation").textContent=subscription?.cancel_at_period_end?"At period end":"Cancel anytime";
+      $("#subscriptionFeatures").innerHTML=details.features.map(feature=>`<li>${esc(feature)}</li>`).join("");
+      $("#subscriptionUsage").innerHTML=usageMarkup();
+      $("#billingHistory").innerHTML=billingHistory.length?billingHistory.map(item=>{
+        const amount=Number(item.amount_total);
+        const price=Number.isFinite(amount)?new Intl.NumberFormat("en-US",{style:"currency",currency:(item.currency||"usd").toUpperCase()}).format(amount/100):"—";
+        const link=item.invoice_url||item.invoice_pdf;
+        return `<div class="billing-row"><div><strong>${esc(formatDate(item.paid_at||item.created_at))}</strong><br><span>${esc(item.description||"Rememberly subscription")}</span></div><div style="text-align:right"><strong>${esc(price)}</strong><br>${link?`<a href="${esc(link)}" target="_blank" rel="noopener noreferrer" style="color:#91a9ed">Invoice</a>`:`<span>${esc(item.status||"")}</span>`}</div></div>`;
+      }).join(""):`<div class="billing-empty">${supabaseClient?"No billing history yet.":"Billing history will appear after a verified Stripe payment."}</div>`;
+      const actions=[];
+      if(plan==="free"){
+        if(subscription&&["past_due","incomplete"].includes(subscription.status)&&supabaseClient){
+          actions.push(`<button class="primary-btn" data-sub-action="portal">${subscription.status==="past_due"?"Update payment method":"Continue billing setup"}</button>`);
+        }else{
+          actions.push(`<button class="primary-btn" data-select-plan="pro">Upgrade to Pro</button>`,`<button class="secondary-btn" data-select-plan="premium">Get Premium</button>`);
+        }
+      }else if(plan==="pro"){
+        actions.push(`<button class="primary-btn" data-select-plan="premium">Upgrade to Premium</button>`);
+        actions.push(subscription?.cancel_at_period_end?`<button class="secondary-btn" data-sub-action="reactivate">Reactivate subscription</button>`:`<button class="secondary-btn" data-sub-action="cancel">Cancel subscription</button>`);
+      }else{
+        actions.push(subscription?.cancel_at_period_end?`<button class="secondary-btn" data-sub-action="reactivate">Reactivate subscription</button>`:`<button class="secondary-btn" data-select-plan="pro">Downgrade to Pro</button><button class="secondary-btn" data-sub-action="cancel">Cancel subscription</button>`);
+      }
+      if(plan!=="free"&&supabaseClient)actions.push(`<button class="secondary-btn" data-sub-action="portal">Manage payment methods</button>`);
+      $("#subscriptionActions").innerHTML=actions.join("");
+      $("#settingsUsage").innerHTML=usageMarkup();
+      $("#sidebarPlanName").textContent=details.name+" plan";
+      $("#planUsage").textContent=`${getMemoryCount()} of ${Number.isFinite(details.memoryLimit)?details.memoryLimit:"unlimited"} memories`;
+      $("#sidebarUsageBar").style.width=(Number.isFinite(details.memoryLimit)?Math.min(100,getMemoryCount()/details.memoryLimit*100):Math.min(100,getMemoryCount()/5000*100))+"%";
+      renderPricing();refreshIcons();
+    }
+    async function loadSubscription(){
+      billingHistory=[];
+      subscriptionRecord=null;
+      if(!supabaseClient||!currentUser){renderSubscription();return}
+      const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+      if(sessionError)throw sessionError;
+      if(!session){renderSubscription();return}
+      const [subscriptionResult,historyResult]=await Promise.all([
+        supabaseClient.from("subscriptions").select("plan,status,billing_interval,current_period_start,current_period_end,cancel_at_period_end").maybeSingle(),
+        supabaseClient.from("billing_history").select("amount_total,currency,status,description,invoice_url,invoice_pdf,paid_at,created_at").order("created_at",{ascending:false}).limit(20)
+      ]);
+      if(subscriptionResult.error)throw subscriptionResult.error;
+      if(historyResult.error)throw historyResult.error;
+      subscriptionRecord=subscriptionResult.data;
+      billingHistory=historyResult.data||[];
+      renderSubscription();
+      if(checkoutReturn){
+        const result=checkoutReturn;checkoutReturn=null;
+        if(result==="success"){
+          const confirmed=subscriptionRecord&&["active","trialing"].includes(subscriptionRecord.status);
+          toast(confirmed?"Stripe confirmed your subscription.":"Payment return received; waiting for Stripe's verified webhook. No paid plan is active until confirmation.");
+        }else if(result==="cancel")toast("Checkout was canceled. No subscription was activated.");
+      }
+    }
+    async function loadBillingReadiness(){
+      if(!supabaseClient)return;
+      try{
+        const {data,error}=await supabaseClient.functions.invoke("billing-status",{body:{}});
+        if(error)throw error;
+        billingReadiness={...data,checked:true};
+      }catch(error){
+        billingReadiness={billing_ready:false,mode:"unconfigured",missing_configuration:["billing-status Edge Function or Stripe secrets"],checked:true};
+        console.error("Could not verify Stripe billing configuration:",error);
+      }
+      renderSubscription();
+    }
+    function subscriptionModal({title,body,action="close",plan=""}){
+      $("#subscriptionModalTitle").textContent=title;
+      $("#subscriptionModalBody").innerHTML=body;
+      $("#subscriptionModalConfirm").textContent=action==="close"?"Got it":action==="checkout"?"Continue to secure checkout":"Confirm";
+      $("#subscriptionModalConfirm").dataset.action=action;
+      $("#subscriptionModalConfirm").dataset.plan=plan;
+      $("#subscriptionModal").classList.add("open");refreshIcons();
+    }
+    function showUpgrade(feature){
+      const required=FEATURE_PLAN[feature]||"pro", plan=PLAN_DETAILS[required];
+      const featureLabel={ai_organization:"AI-powered organization",voice_capture:"voice-to-text capture",document_vault:"Document Vault",warranty_tracker:"Warranty Tracker",receipt_manager:"Receipt Manager",memory_limit:"more memory capacity",daily_briefing:"custom briefing times and browser push",notification_customization:"advanced notification preferences",weekly_summary:"weekly briefing summaries"}[feature]||feature.replaceAll("_"," ");
+      const checkoutCopy=billingReadiness.billing_ready
+        ?"Your payment details are handled by Stripe. Rememberly does not store raw card details."
+        :"Development preview only. Stripe is not configured, so checkout and paid-plan activation are unavailable.";
+      subscriptionModal({title:`Unlock more with Rememberly ${plan.name}.`,action:"checkout",plan:required,body:`<p class="modal-copy">Upgrade your plan to access ${esc(featureLabel)} and get more from your personal memory workspace.</p><div class="modal-plan-options"><div class="modal-plan-option"><strong>${plan.name} · $${plan.price.toFixed(2)}/month</strong><span>Monthly recurring charge. Cancel anytime. Billing and plan activation are confirmed by Stripe.</span></div><div class="modal-plan-option"><strong>${billingReadiness.billing_ready?"Secure checkout":"Preview mode"}</strong><span>${checkoutCopy}</span></div></div>`});
+    }
+    function choosePlan(plan){
+      if(plan==="free"){openPage("subscription");return}
+      const details=PLAN_DETAILS[plan];
+      if(["pro","premium"].includes(currentPlan())&&plan!==currentPlan()){
+        const changeLabel=currentPlan()==="premium"?"downgrade":"upgrade";
+        subscriptionModal({title:`${changeLabel==="downgrade"?"Downgrade":"Upgrade"} to ${details.name}?`,action:"change_plan",plan,body:`<p class="modal-copy">Stripe will update your subscription to Rememberly ${details.name} at $${details.price.toFixed(2)} USD per month. Any proration is calculated by Stripe. Your displayed plan changes only after the verified webhook confirms the update.</p>`});
+        return;
+      }
+      const label=!billingReadiness.billing_ready?"Development preview only: Stripe is not configured, so checkout is unavailable.":plan===currentPlan()?"This is your current plan.":`Continue to Stripe Checkout for Rememberly ${details.name} at $${details.price.toFixed(2)} USD per month.`;
+      subscriptionModal({title:plan==="premium"&&currentPlan()==="pro"?"Upgrade to Premium":`Choose ${details.name}`,action:"checkout",plan,body:`<p class="modal-copy">${esc(label)} The charge recurs monthly. You can cancel anytime in My Subscription. Your plan changes only after Stripe confirms payment and the verified webhook updates your account.</p>`});
+    }
+    async function invokeBilling(functionName,body={}){
+      if(!supabaseClient)throw new Error("Supabase is not configured. Paid plans cannot be activated in development preview mode.");
+      const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+      if(sessionError)throw sessionError;
+      if(!session)throw new Error("Sign in with your Supabase account to manage billing.");
+      const {data,error}=await supabaseClient.functions.invoke(functionName,{body});
+      if(error)throw new Error(error.message||"Billing request failed.");
+      if(data?.error)throw new Error(data.error);
+      return data;
+    }
+    async function submitSubscriptionAction(){
+      const button=$("#subscriptionModalConfirm"), action=button.dataset.action, plan=button.dataset.plan;
+      if(button.disabled)return;
+      if(action==="close"){ $("#subscriptionModal").classList.remove("open");return; }
+      button.disabled=true;
+      try{
+        if(action==="checkout"){
+          if(!billingReadiness.billing_ready)throw new Error("Stripe billing is not configured. This account remains in development preview and no paid plan can be activated.");
+          const data=await invokeBilling("create-checkout-session",{plan,success_url:`${location.origin}${location.pathname}?checkout=success`,cancel_url:`${location.origin}${location.pathname}?checkout=cancel`});
+          const url=new URL(data.url);
+          if(url.protocol!=="https:"||url.hostname!=="stripe.com"&&!url.hostname.endsWith(".stripe.com"))throw new Error("The checkout provider returned an unexpected URL.");
+          location.assign(url.href);
+          return;
+        }
+        if(action==="cancel"||action==="reactivate"){
+          await invokeBilling("subscription-action",{action});
+          $("#subscriptionModal").classList.remove("open");
+          toast("Request sent to Stripe. Your plan will update after the verified webhook syncs.");
+          return;
+        }
+        if(action==="change_plan"){
+          if(!billingReadiness.billing_ready)throw new Error("Stripe billing is not fully configured. No plan change was made.");
+          await invokeBilling("subscription-action",{action:"change_plan",plan});
+          $("#subscriptionModal").classList.remove("open");
+          toast("Stripe accepted the plan-change request. Your plan will update after the verified webhook syncs.");
+          return;
+        }
+      }catch(error){toast(error.message||"Could not complete the billing request.");}
+      finally{button.disabled=false;}
+    }
+    $("#subscriptionModalConfirm").addEventListener("click",submitSubscriptionAction);
+    $("#closeSubscriptionModal").onclick=$("#subscriptionModalCancel").onclick=()=>$("#subscriptionModal").classList.remove("open");
+    $("#subscriptionModal").addEventListener("click",event=>{if(event.target.id==="subscriptionModal")$("#subscriptionModal").classList.remove("open")});
+    document.addEventListener("click",event=>{
+      const selected=event.target.closest("[data-select-plan]");
+      if(selected){choosePlan(selected.dataset.selectPlan);return}
+      const action=event.target.closest("[data-sub-action]");
+      if(!action)return;
+      const kind=action.dataset.subAction;
+      if(kind==="portal"){
+        invokeBilling("create-portal-session").then(data=>{const url=new URL(data.url);if(url.protocol!=="https:"||url.hostname!=="stripe.com"&&!url.hostname.endsWith(".stripe.com"))throw new Error("The billing provider returned an unexpected URL.");location.assign(url.href)}).catch(error=>toast(error.message||"Could not open billing portal."));
+        return;
+      }
+      const reactivate=kind==="reactivate";
+      subscriptionModal({title:reactivate?"Reactivate your subscription?":"Cancel your subscription?",action:reactivate?"reactivate":"cancel",body:`<p class="modal-copy">${reactivate?"Stripe will be asked to continue your subscription at the end of the current billing period. Your status changes only after Stripe confirms it.":"Stripe will be asked to cancel at the end of your current billing period. Your paid access remains available until then; cancellation is not confirmed until Stripe updates your subscription."}</p>`});
+    });
+    $("#refreshSubscription").onclick=()=>loadSubscription().then(()=>toast(supabaseClient?"Subscription status refreshed from Supabase.":"Development preview only; no billing provider is connected.")).catch(error=>toast(error.message||"Could not refresh subscription."));
+    function remindersKey(){return "rememberly_reminders:"+currentUser.email}
+    function completedBriefingKey(){return "rememberly_briefing_completed:"+currentUser.email}
+    function completedBriefingEvents(){return JSON.parse(localStorage.getItem(completedBriefingKey())||"[]")}
+    function reminderRecords(){return JSON.parse(localStorage.getItem(remindersKey())||"[]")}
+    function localBriefingEvents(){
+      const events=[];
+      for(const doc of documents){
+        const categoryText=`${doc.category||""} ${doc.name||""}`.toLowerCase();
+        const candidates=[];
+        if(doc.warrantyDate)candidates.push(["warranty",doc.warrantyDate]);
+        if(doc.expiration){
+          const category=categoryText.includes("subscription")?"subscription_renewal"
+            :categoryText.includes("bill")||categoryText.includes("financial")?"bill"
+            :categoryText.includes("travel")?"travel"
+            :categoryText.includes("appointment")?"appointment":"document_expiration";
+          candidates.push([category,doc.expiration]);
+        }
+        for(const [category,dueDate] of candidates){
+          if(!/^\d{4}-\d{2}-\d{2}$/.test(dueDate))continue;
+          events.push({id:`document:${doc.id}:${category}`,source_id:`document:${doc.id}:${category}`,source_type:"document",category,title:doc.name||"Important date",due_date:dueDate,related_document_id:String(doc.id),importance:category==="bill"?3:2,completed_at:doc.briefingCompletedAt||null,created_at:doc.createdAt||null,source_updated_at:doc.updated||doc.createdAt||new Date().toISOString()});
+        }
+      }
+      for(const reminder of reminderRecords()){
+        if(!reminder.due_date||!/^\d{4}-\d{2}-\d{2}$/.test(reminder.due_date))continue;
+        events.push({id:`reminder:${reminder.id}:reminder`,source_id:`reminder:${reminder.id}:reminder`,source_type:"reminder",category:"reminder",title:reminder.title,due_date:reminder.due_date,related_reminder_id:String(reminder.id),importance:Number(reminder.importance)||2,completed_at:reminder.completed_at||null,created_at:reminder.created_at||null,source_updated_at:reminder.updated_at||reminder.created_at||new Date().toISOString()});
+      }
+      const completed=completedBriefingEvents();
+      return events.map(event=>completed.includes(event.id)?{...event,completed_at:event.completed_at||new Date().toISOString()}:event);
+    }
+    function localDateString(date=new Date()){
+      const year=date.getFullYear(),month=String(date.getMonth()+1).padStart(2,"0"),day=String(date.getDate()).padStart(2,"0");
+      return `${year}-${month}-${day}`;
+    }
+    function eventDaysRemaining(event){
+      const today=new Date(`${localDateString()}T00:00:00`),due=new Date(`${event.due_date}T00:00:00`);
+      return Math.round((due-today)/86400000);
+    }
+    function eventPriority(event){
+      const days=eventDaysRemaining(event);
+      if(days<=0||event.importance>=3&&days<=1)return "urgent";
+      if(days<=3)return "high";
+      if(days<=14)return "medium";
+      return "low";
+    }
+    function eventCategoryLabel(category){
+      return Object.fromEntries(NOTIFICATION_CATEGORIES.map(([key,label])=>[key,label]))[category]||"Important date";
+    }
+    function eventIcon(category){
+      return ({warranty:"badge-check",document_expiration:"file-clock",bill:"receipt-text",subscription_renewal:"credit-card",travel:"plane",reminder:"clock-3",appointment:"calendar-days"})[category]||"calendar";
+    }
+    function eventDaysLabel(days){
+      if(days<0)return `${Math.abs(days)} day${Math.abs(days)===1?"":"s"} overdue`;
+      if(days===0)return "Due today";
+      if(days===1)return "Tomorrow";
+      return `In ${days} days`;
+    }
+    function eventMarkup(event,completedSection=false){
+      const days=eventDaysRemaining(event),priority=eventPriority(event);
+      return `<article class="briefing-event"><span class="briefing-event-icon">${icon(eventIcon(event.category))}</span><div class="briefing-event-content"><strong>${esc(event.title)}</strong><p>${esc(eventCategoryLabel(event.category))} · ${esc(formatDate(event.due_date))}</p><div class="briefing-meta"><span>${esc(eventDaysLabel(days))}</span><span class="priority-pill ${priority}">${priority}</span></div></div>${!completedSection?`<div class="briefing-event-actions"><button data-complete-event="${esc(event.id)}" title="Mark complete">${icon("check")}</button></div>`:""}</article>`;
+    }
+    function emptyBriefing(title,description){
+      return `<div class="briefing-empty"><i>${icon("circle-check")}</i><strong>${esc(title)}</strong><p>${esc(description)}</p></div>`;
+    }
+    function renderNotificationCategorySettings(){
+      const categories=currentPlan()==="premium"
+        ?notificationSettings?.notification_categories||DEFAULT_NOTIFICATION_SETTINGS().notification_categories
+        :DEFAULT_NOTIFICATION_SETTINGS().notification_categories;
+      $("#notificationCategorySettings").innerHTML=NOTIFICATION_CATEGORIES.map(([key,label,description])=>`<label class="notification-pref"><span><strong>${esc(label)}</strong><span>${esc(description)}</span></span><input type="checkbox" data-notification-category="${key}" ${categories[key]!==false?"checked":""}></label>`).join("");
+    }
+    function renderNotificationSettings(){
+      const settings=notificationSettings||DEFAULT_NOTIFICATION_SETTINGS();
+      const free=currentPlan()==="free",premium=currentPlan()==="premium";
+      $("#dailyBriefingEnabled").checked=settings.daily_briefing_enabled!==false;
+      $("#briefingTime").value=free?"08:00":settings.briefing_time||"08:00";
+      $("#briefingTimezone").value=settings.timezone||DEFAULT_NOTIFICATION_SETTINGS().timezone;
+      $("#quietStart").value=free?"22:00":settings.quiet_hours_start||"22:00";
+      $("#quietEnd").value=free?"07:00":settings.quiet_hours_end||"07:00";
+      $("#notificationFrequency").value=premium?settings.notification_frequency||"daily_briefing":"daily_briefing";
+      $("#emailNotificationsEnabled").checked=settings.email_enabled===true;
+      renderNotificationCategorySettings();
+      const gated=free,advanced=!premium;
+      $("#briefingTime").disabled=free;
+      $("#briefingTimezone").disabled=free;
+      $("#quietStart").disabled=free;
+      $("#quietEnd").disabled=free;
+      $("#notificationFrequency").disabled=advanced;
+      $$("[data-notification-category]").forEach(input=>{input.disabled=advanced&&input.dataset.notificationCategory!=="reminder"});
+      $("#enablePushNotifications").disabled=!supabaseClient||gated;
+      $("#disablePushNotifications").disabled=!supabaseClient;
+      $("#pushStatus").textContent=!supabaseClient?"Browser push requires a connected Supabase project and Web Push configuration.":gated?"Custom scheduling and push notifications are included with Pro.":"Push permission: "+("Notification"in window?Notification.permission:"not available")+" · "+(settings.push_enabled?"Subscription saved":"Not subscribed");
+      $("#notificationPlanHint").textContent=free?"Upgrade to Pro for custom briefing times and browser push.":advanced?"Upgrade to Premium to customize notification categories and frequency.":"Your plan includes advanced notification preferences.";
+      $("#notificationUpgradeButton").style.display=advanced?"inline-flex":"none";
+      $("#notificationUpgradeButton").textContent=free?"Explore Pro":"Explore Premium";
+    }
+    function renderNotificationHistory(){
+      const visibleRows=notificationRows.filter(row=>!row.snoozed_until||new Date(row.snoozed_until)<=new Date());
+      const unread=visibleRows.filter(row=>!row.read_at).length;
+      $("#notificationCount").textContent=unread>99?"99+":String(unread);
+      $("#notificationCount").classList.toggle("visible",unread>0);
+      $("#notificationHistory").innerHTML=visibleRows.length?visibleRows.map(row=>`<article class="notification-item ${row.read_at?"":"unread"}"><span class="briefing-event-icon">${icon(eventIcon(row.category))}</span><div><strong>${esc(row.title)}</strong><p>${esc(row.message)}</p><time>${esc(formatDate(row.created_at))} · ${esc(row.priority)}</time><div class="notification-actions">${!row.read_at?`<button data-read-notification="${row.id}">Mark read</button>`:""}<button data-snooze-notification="${row.id}">Snooze 1 day</button></div></div></article>`).join(""):emptyBriefing("No notifications yet","Useful reminders will appear here when an important date is approaching.");
+      $("#briefingHistory").innerHTML=briefingRows.length?briefingRows.map(row=>`<article class="notification-item"><span class="briefing-event-icon">${icon("sunrise")}</span><div><strong>${esc(formatDate(row.briefing_date))} briefing</strong><p>${esc(row.summary)}</p><time>${esc(String(row.delivery_status||"in_app").replaceAll("_"," "))} · ${Number(row.included_events?.length)||0} item${Number(row.included_events?.length)===1?"":"s"}</time></div></article>`).join(""):emptyBriefing("No briefings yet","A briefing appears here when there are relevant upcoming items.");
+    }
+    function renderBriefing(){
+      const firstName=currentUser?.name?.trim().split(/\s+/)[0]||"there";
+      $("#briefingGreeting").textContent=`Good morning, ${firstName}.`;
+      $("#briefingDate").textContent=new Intl.DateTimeFormat(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(new Date());
+      const events=[...briefingEvents].filter(event=>!event.completed_at&&!event.dismissed_at&&eventDaysRemaining(event)>=0&&eventDaysRemaining(event)<=30);
+      const today=events.filter(event=>eventDaysRemaining(event)===0).sort((a,b)=>b.importance-a.importance);
+      const upcoming=events.filter(event=>eventDaysRemaining(event)>0&&eventDaysRemaining(event)<=7).sort((a,b)=>eventDaysRemaining(a)-eventDaysRemaining(b)||b.importance-a.importance);
+      const recent=[...documents.map(doc=>({title:doc.name,category:doc.category,created_at:doc.createdAt})),...memories.filter(memory=>!memory.deleted).map(memory=>({title:memory.title,category:memory.category,created_at:memory.updated||memory.created}))].filter(item=>item.created_at).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
+      const completed=[...briefingEvents].filter(event=>event.completed_at).sort((a,b)=>new Date(b.completed_at)-new Date(a.completed_at)).slice(0,5);
+      const allUpcoming=[...today,...upcoming],summary=allUpcoming.length?`You have ${allUpcoming.length} important thing${allUpcoming.length===1?"":"s"} to take care of soon.`:"You're all caught up.";
+      $("#briefingSummary").innerHTML=`${icon(allUpcoming.length?"sparkles":"circle-check")}<span>${esc(summary)}</span>`;
+      $("#briefingToday").innerHTML=today.length?today.map(event=>eventMarkup(event)).join(""):emptyBriefing("Nothing due today","No important item needs your attention today.");
+      $("#briefingUpcoming").innerHTML=upcoming.length?upcoming.slice(0,5).map(event=>eventMarkup(event)).join(""):emptyBriefing("All clear for the next 7 days","We'll surface a reminder when a relevant date approaches.");
+      $("#briefingRecent").innerHTML=recent.length?recent.map(item=>`<article class="briefing-event"><span class="briefing-event-icon">${icon("history")}</span><div class="briefing-event-content"><strong>${esc(item.title)}</strong><p>${esc(item.category||"Memory")} · ${esc(formatDate(item.created_at))}</p></div></article>`).join(""):emptyBriefing("No recent updates","New documents and memories will show here.");
+      $("#briefingCompleted").innerHTML=completed.length?completed.map(event=>eventMarkup(event,true)).join(""):emptyBriefing("Nothing completed yet","Completed reminders and dates will appear here.");
+      $("#briefingPreviewBanner").innerHTML=supabaseClient?"":`<div class="preview-banner"><strong>Local preview:</strong> Upcoming dates are calculated from documents saved in this browser. In-app notification history and scheduled push delivery require Supabase configuration.</div>`;
+      renderNotificationHistory();refreshIcons();
+    }
+    async function syncBriefingEvents(){
+      briefingEvents=localBriefingEvents();
+      if(!supabaseClient||!currentUser)return;
+      const {data:{session}}=await supabaseClient.auth.getSession();
+      if(!session)return;
+      const rows=briefingEvents.map(event=>({user_id:session.user.id,source_id:event.source_id,source_type:event.source_type,category:event.category,title:event.title.slice(0,160),due_date:event.due_date,importance:event.importance,related_memory_id:event.related_memory_id||null,related_document_id:event.related_document_id||null,completed_at:event.completed_at||null,source_updated_at:event.source_updated_at}));
+      if(rows.length){
+        const {error}=await supabaseClient.from("briefing_events").upsert(rows,{onConflict:"user_id,source_id,category"});
+        if(error)throw error;
+      }
+      const {data,error}=await supabaseClient.from("briefing_events").select("id,source_id,source_type,category,title,due_date,importance,related_memory_id,related_document_id,completed_at,dismissed_at,created_at,source_updated_at").gte("due_date",localDateString()).lte("due_date",localDateString(new Date(Date.now()+30*86400000)));
+      if(error)throw error;
+      briefingEvents=data||[];
+    }
+    async function loadNotificationData(){
+      notificationSettings=DEFAULT_NOTIFICATION_SETTINGS();
+      notificationRows=[];briefingRows=[];
+      if(!supabaseClient){
+        notificationSettings={...notificationSettings,...JSON.parse(localStorage.getItem("rememberly_notification_settings:"+currentUser.email)||"{}")};
+        return;
+      }
+      const [settingsResult,notificationsResult,briefingsResult]=await Promise.all([
+        supabaseClient.from("user_notification_settings").select("*").maybeSingle(),
+        supabaseClient.from("notifications").select("id,title,message,category,priority,related_memory_id,related_document_id,related_reminder_id,event_id,notification_stage,scheduled_at,sent_at,read_at,completed_at,snoozed_until,created_at").order("created_at",{ascending:false}).limit(50),
+        supabaseClient.from("daily_briefings").select("id,briefing_date,summary,included_events,delivery_status,created_at").order("briefing_date",{ascending:false}).limit(14)
+      ]);
+      if(settingsResult.error)throw settingsResult.error;
+      if(notificationsResult.error)throw notificationsResult.error;
+      if(briefingsResult.error)throw briefingsResult.error;
+      if(settingsResult.data)notificationSettings={...DEFAULT_NOTIFICATION_SETTINGS(),...settingsResult.data};
+      else{
+        const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+        if(sessionError)throw sessionError;
+        if(session){
+          const {data,error}=await supabaseClient.from("user_notification_settings").upsert({user_id:session.user.id,...notificationSettings},{onConflict:"user_id"}).select().single();
+          if(error)throw error;
+          notificationSettings={...DEFAULT_NOTIFICATION_SETTINGS(),...data};
+        }
+      }
+      notificationRows=notificationsResult.data||[];
+      briefingRows=briefingsResult.data||[];
+    }
+    async function refreshBriefing(){
+      try{
+        await Promise.all([loadNotificationData(),syncBriefingEvents()]);
+        renderNotificationSettings();renderBriefing();
+      }catch(error){toast(error.message||"Could not load briefing data.");}
+    }
+    async function saveNotificationPreferences(){
+      const categories=Object.fromEntries(NOTIFICATION_CATEGORIES.map(([key])=>[key,$(`[data-notification-category="${key}"]`).checked]));
+      const settings={daily_briefing_enabled:$("#dailyBriefingEnabled").checked,briefing_time:$("#briefingTime").value||"08:00",timezone:$("#briefingTimezone").value.trim()||DEFAULT_NOTIFICATION_SETTINGS().timezone,quiet_hours_start:$("#quietStart").value||"22:00",quiet_hours_end:$("#quietEnd").value||"07:00",notification_frequency:$("#notificationFrequency").value,notification_categories:categories,push_enabled:notificationSettings?.push_enabled||false,email_enabled:$("#emailNotificationsEnabled").checked};
+      try{new Intl.DateTimeFormat("en-US",{timeZone:settings.timezone});}catch{toast("Enter a valid IANA timezone, for example Europe/Belgrade.");return}
+      if(!supabaseClient){
+        notificationSettings=settings;localStorage.setItem("rememberly_notification_settings:"+currentUser.email,JSON.stringify(settings));renderBriefing();toast("Preferences saved in this browser preview.");return;
+      }
+      if(currentPlan()==="free"&&(settings.briefing_time!=="08:00"||settings.quiet_hours_start!=="22:00"||settings.quiet_hours_end!=="07:00")){showUpgrade("daily_briefing");return}
+      if(currentPlan()!=="premium"&&(settings.notification_frequency!=="daily_briefing"||NOTIFICATION_CATEGORIES.some(([key])=>key!=="reminder"&&settings.notification_categories[key]!==true))){showUpgrade("notification_customization");return}
+      const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+      if(sessionError||!session){toast(sessionError?.message||"Sign in to save notification preferences.");return}
+      const {data,error}=await supabaseClient.from("user_notification_settings").upsert({user_id:session.user.id,...settings},{onConflict:"user_id"}).select().single();
+      if(error){toast(error.message||"Could not save notification preferences.");return}
+      notificationSettings={...DEFAULT_NOTIFICATION_SETTINGS(),...data};renderNotificationSettings();toast("Notification preferences saved.");
+    }
+    function base64UrlToBytes(value){
+      const normalized=value.replace(/-/g,"+").replace(/_/g,"/");
+      const decoded=atob(normalized.padEnd(Math.ceil(normalized.length/4)*4,"="));
+      return Uint8Array.from(decoded,char=>char.charCodeAt(0));
+    }
+    async function enablePushNotifications(){
+      if(!supabaseClient||!appConfig.vapidPublicKey){toast("Configure Supabase and the public VAPID key before enabling browser push.");return}
+      if(currentPlan()==="free"){showUpgrade("daily_briefing");return}
+      if(!("serviceWorker"in navigator)||!("PushManager"in window)||!("Notification"in window)){toast("This browser does not support web push notifications.");return}
+      const permission=await Notification.requestPermission();
+      if(permission!=="granted"){toast("Push permission was not granted. You can still view in-app notifications.");renderNotificationSettings();return}
+      try{
+        const registration=await navigator.serviceWorker.register("./service-worker.js");
+        const subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:base64UrlToBytes(appConfig.vapidPublicKey)});
+        const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+        if(sessionError||!session)throw sessionError||new Error("Sign in to enable notifications.");
+        const serialized=subscription.toJSON();
+        const {error}=await supabaseClient.from("push_subscriptions").upsert({user_id:session.user.id,endpoint:subscription.endpoint,subscription_data:serialized},{onConflict:"endpoint"});
+        if(error)throw error;
+        notificationSettings={...notificationSettings,push_enabled:true};
+        const {error:settingsError}=await supabaseClient.from("user_notification_settings").upsert({user_id:session.user.id,...notificationSettings},{onConflict:"user_id"});
+        if(settingsError)throw settingsError;
+        renderNotificationSettings();toast("Browser push subscription saved.");
+      }catch(error){toast(error.message||"Could not register browser push.");}
+    }
+    async function disablePushNotifications(){
+      if(!supabaseClient||!("serviceWorker"in navigator)){toast("Push settings are unavailable.");return}
+      try{
+        const registration=await navigator.serviceWorker.getRegistration("./service-worker.js");
+        const subscription=await registration?.pushManager.getSubscription();
+        const endpoint=subscription?.endpoint;
+        if(subscription)await subscription.unsubscribe();
+        if(endpoint){const {error}=await supabaseClient.from("push_subscriptions").delete().eq("endpoint",endpoint);if(error)throw error}
+        const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+        if(sessionError)throw sessionError;
+        if(session){
+          const {count,error}=await supabaseClient.from("push_subscriptions").select("id",{count:"exact",head:true}).eq("user_id",session.user.id);
+          if(error)throw error;
+          notificationSettings={...notificationSettings,push_enabled:(count||0)>0};
+          const {error:settingsError}=await supabaseClient.from("user_notification_settings").upsert({user_id:session.user.id,...notificationSettings},{onConflict:"user_id"});
+          if(settingsError)throw settingsError;
+        }
+        renderNotificationSettings();toast("This browser's push subscription was removed. Browser permission can be revoked in site settings.");
+      }catch(error){toast(error.message||"Could not remove push subscription.");}
+    }
+    async function updateNotification(id,changes){
+      if(!supabaseClient){toast("Notification history is stored in Supabase; it is unavailable in local preview.");return}
+      const {error}=await supabaseClient.from("notifications").update(changes).eq("id",id);
+      if(error){toast(error.message||"Could not update notification.");return}
+      await refreshBriefing();
+    }
+    async function completeBriefingEvent(id){
+      const event=briefingEvents.find(item=>item.id===id);
+      if(!event)return;
+      if(event.category==="bill"&&!confirm("Mark this bill reminder as completed? This does not mark a payment as paid."))return;
+      if(event.source_type==="reminder"){
+        const reminders=reminderRecords().map(reminder=>String(reminder.id)===String(event.related_reminder_id)?{...reminder,completed_at:new Date().toISOString()}:reminder);
+        localStorage.setItem(remindersKey(),JSON.stringify(reminders));
+      }else{
+        const doc=documents.find(item=>String(item.id)===String(event.related_document_id));
+        if(doc){doc.briefingCompletedAt=new Date().toISOString();saveDocuments()}
+      }
+      const completed=completedBriefingEvents();
+      if(!completed.includes(event.id)){completed.push(event.id);localStorage.setItem(completedBriefingKey(),JSON.stringify(completed))}
+      if(supabaseClient){
+        const {error}=await supabaseClient.from("briefing_events").update({completed_at:new Date().toISOString()}).eq("source_id",event.source_id).eq("category",event.category);
+        if(error){toast(error.message||"Could not save completion.");return}
+      }
+      briefingEvents=localBriefingEvents();renderBriefing();toast("Reminder marked complete. No payment was made.");
+    }
+    async function openNotificationCenter(){
+      await openPage("briefing");
+    }
+    function openReminderModal(){
+      $("#reminderTitle").value="";
+      $("#reminderDate").value=localDateString();
+      $("#reminderModal").classList.add("open");
+      setTimeout(()=>$("#reminderTitle").focus(),50);
+    }
+    function closeReminderModal(){ $("#reminderModal").classList.remove("open"); }
+    async function saveReminderRecord(){
+      const title=$("#reminderTitle").value.trim(),dueDate=$("#reminderDate").value;
+      if(!title||!dueDate){toast("Add a reminder title and date.");return}
+      const now=new Date().toISOString(),reminders=reminderRecords();
+      reminders.unshift({id:randomHex(12),title,due_date:dueDate,importance:2,created_at:now,updated_at:now});
+      try{localStorage.setItem(remindersKey(),JSON.stringify(reminders));}
+      catch(error){toast(error.message||"Could not save this reminder in browser storage.");return}
+      closeReminderModal();
+      render();renderInAppReminder();
+      await refreshBriefing();
+      toast("Reminder saved. Its date will sync when Supabase is available.");
+    }
+    async function removeSyncedDocumentEvents(documentId){
+      if(!supabaseClient)return;
+      const sourceIds=["warranty","document_expiration","bill","travel","subscription_renewal","appointment"].map(category=>`document:${documentId}:${category}`);
+      const {error}=await supabaseClient.from("briefing_events").delete().in("source_id",sourceIds);
+      if(error)toast(error.message||"Could not sync deleted reminder metadata.");
+    }
+    function renderInAppReminder(){
+      const events=localBriefingEvents().filter(event=>!event.completed_at).sort((a,b)=>eventDaysRemaining(a)-eventDaysRemaining(b)||b.importance-a.importance);
+      $("#remindersPage").innerHTML=events.length?events.map(event=>eventMarkup(event)).join(""):`<div class="empty-page" style="min-height:320px"><div><i data-lucide="clock-3"></i><h2>No reminders yet</h2><p>Create a reminder when you need to remember a date or task.</p></div></div>`;
+      refreshIcons();
+    }
+    function typeIcon(t){ return t==="link"?"link":t==="image"?"image":t==="voice"?"mic":"notebook-text"; }
+    function card(m){ return `<article class="memory-card" data-id="${m.id}"><div class="memory-card-head"><span class="memory-kind"><i>${icon(typeIcon(m.type))}</i>${m.type==="note"?"Note":m.type[0].toUpperCase()+m.type.slice(1)}</span><button class="favorite ${m.favorite?"active":""}" data-favorite="${m.id}" title="Favorite">${icon("star")}</button></div><h3>${esc(m.title)}</h3><p>${esc(m.summary||m.content||"")}</p><div class="memory-meta"><span class="badge">${esc(m.category)}</span><span class="memory-date">${formatDate(m.created)}</span></div></article>` }
+    function render(){
+      const active=memories.filter(m=>!m.deleted);
+      const activeWarranties=documents.filter(d=>d.category==="Warranties"&&documentStatus(d)==="active").length;
+      const upcomingDates=localBriefingEvents().filter(event=>!event.completed_at&&eventDaysRemaining(event)>=0).sort((a,b)=>eventDaysRemaining(a)-eventDaysRemaining(b)||b.importance-a.importance).slice(0,3);
+      $("#stats").innerHTML=`<div class="stat"><div class="stat-top"><span class="stat-label">Total Memories</span><span class="stat-icon">${icon("layers-3")}</span></div><div class="stat-value">${active.length}</div><span class="trend">All time</span></div>
+      <div class="stat"><div class="stat-top"><span class="stat-label">Total Documents</span><span class="stat-icon">${icon("shield-check")}</span></div><div class="stat-value">${documents.length}</div><span class="trend">In your vault</span></div>
+      <div class="stat"><div class="stat-top"><span class="stat-label">Active Warranties</span><span class="stat-icon">${icon("badge-check")}</span></div><div class="stat-value">${activeWarranties}</div><span class="trend">Protected</span></div>
+      <div class="stat"><div class="stat-top"><span class="stat-label">Upcoming Expirations</span><span class="stat-icon">${icon("calendar-clock")}</span></div><div class="stat-value">${upcomingDates.length}</div><span class="trend">Next dates</span></div>`;
+      $("#recentGrid").innerHTML=active.length?active.slice(0,3).map(card).join(""):`<div class="empty-page" style="grid-column:1/-1;min-height:180px"><div><i data-lucide="notebook-text"></i><h2>No recent memories</h2><p>Create a memory to start your personal archive.</p></div></div>`;
+      $("#reminderPreview").innerHTML=upcomingDates.length?upcomingDates.map(event=>`<div class="reminder"><span class="reminder-dot"></span><div><strong>${esc(event.title)}</strong><span>${esc(formatDate(event.due_date))}</span></div></div>`).join(""):`<div class="empty-page" style="min-height:120px"><div><i data-lucide="clock-3" style="width:38px;height:38px"></i><h2 style="font-size:13px">No important upcoming dates</h2></div></div>`;
+      renderLibrary(); renderFavorites(); renderSubscription(); refreshIcons();
+    }
+    function renderLibrary(){
+      const q=($("#memorySearch")?.value||"").toLowerCase(), cat=$("#categoryFilter")?.value||"";
+      const data=memories.filter(m=>!m.deleted&&(cat?m.category===cat:true)&&(q?`${m.title} ${m.content} ${m.category} ${m.tags?.join(" ")}`.toLowerCase().includes(q):true));
+      $("#libraryGrid").innerHTML=data.length?data.map(card).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="search-x"></i><h2>No memories found</h2><p>Try another search or category.</p></div></div>`;
+      $("#libraryGrid").classList.toggle("list",viewList);
+    }
+    function renderFavorites(){ const data=memories.filter(m=>m.favorite&&!m.deleted); $("#favoritesGrid").innerHTML=data.length?data.map(card).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="star"></i><h2>No favorites yet</h2><p>Star a memory to find it quickly here.</p></div></div>`; }
+    async function openPage(name){
+      const required={warranties:"warranty_tracker",receipts:"receipt_manager"}[name];
+      if(required&&!await requireFeature(required))return;
+      $$(".content-page").forEach(p=>p.classList.remove("active")); $("#page-"+name)?.classList.add("active");
+      $$(".nav-item").forEach(n=>n.classList.toggle("active",n.dataset.page===name)); $("#sidebar").classList.remove("open");
+      if(name==="reminders") renderInAppReminder();
+      if(name==="vault") renderVault();
+      if(name==="warranties") renderWarranties();
+      if(name==="receipts") renderReceipts();
+      if(name==="expiration") renderExpiration();
+      if(name==="pricing")renderPricing();
+      if(name==="subscription")loadSubscription().catch(error=>toast(error.message||"Could not load subscription details."));
+      if(name==="briefing")refreshBriefing();
+      if(name==="settings")loadNotificationData().then(()=>renderNotificationSettings()).catch(error=>toast(error.message||"Could not load notification preferences."));
+      refreshIcons();
+    }
+    async function openModal(type="text",memory=null){
+      if(!await setCapture(type,Boolean(memory)))return;
+      editingId=memory?.id||null; $("#modalTitle").textContent=memory?"Edit memory":"New memory";
+      $("#memoryTitle").value=memory?.title||""; $("#memoryContent").value=memory?.content||""; $("#memoryCategory").value=memory?.category||"Personal"; $("#memoryTags").value=memory?.tags?.join(", ")||"";
+      $("#memoryModal").classList.add("open"); setTimeout(()=>$("#memoryTitle").focus(),100);
+    }
+    async function setCapture(type,editing=false){ if(type==="voice"&&!editing&&!await requireFeature("voice_capture"))return false; captureType=type; $$(".capture-tab").forEach(t=>t.classList.toggle("active",t.dataset.type===type)); ["text","voice","image","link"].forEach(t=>$("#capture"+t[0].toUpperCase()+t.slice(1)).style.display=t===type?"block":"none"); refreshIcons();return true; }
+    function closeModal(){ $("#memoryModal").classList.remove("open"); editingId=null; }
+    function toast(text){ const el=document.createElement("div"); el.className="toast"; el.textContent=text; $("#toastWrap").appendChild(el); setTimeout(()=>el.remove(),2800); }
+    function openSearch(){ $("#searchOverlay").classList.add("open"); $("#overlaySearch").value=""; renderSearch(""); setTimeout(()=>$("#overlaySearch").focus(),50); }
+    function renderSearch(q){
+      const active=memories.filter(m=>!m.deleted);
+      const memoryMatches=q?active.filter(m=>`${m.title} ${m.content} ${m.category} ${m.tags?.join(" ")}`.toLowerCase().includes(q.toLowerCase())):active.slice(0,5);
+      const docMatches=q?documents.filter(d=>`${d.name} ${d.category} ${d.description||""} ${d.tags||""} ${d.store||""} ${d.extractedText||""} ${d.expiration||""}`.toLowerCase().includes(q.toLowerCase())):documents.slice(0,5);
+      const memoryRows=memoryMatches.map(m=>`<div class="search-result" data-id="${m.id}"><span class="memory-kind"><i>${icon(typeIcon(m.type))}</i></span><div><strong>${esc(m.title)}</strong><span>${esc(m.category)} · ${esc(m.summary||m.content||"").slice(0,70)}</span></div></div>`).join("");
+      const docRows=docMatches.map(d=>`<div class="search-result" data-document-search="${d.id}"><span class="memory-kind"><i>${icon("shield-check")}</i></span><div><strong>${esc(d.name)}</strong><span>Document · ${esc(d.category)}</span></div></div>`).join("");
+      $("#searchResults").innerHTML=(memoryRows+docRows)||`<div style="padding:28px;text-align:center;color:var(--muted);font-size:12px">No memories or documents match "${esc(q)}"</div>`;
+      refreshIcons();
+    }
+    $$(".nav-item[data-page]").forEach(b=>b.addEventListener("click",()=>openPage(b.dataset.page)));
+    $$("[data-open-page]").forEach(b=>b.addEventListener("click",()=>openPage(b.dataset.openPage)));
+    ["newMemory","mobileNew","addMemoryPage"].forEach(id=>$("#"+id)?.addEventListener("click",()=>openModal()));
+    $("#closeModal").onclick=$("#cancelModal").onclick=closeModal;
+    $("#memoryModal").addEventListener("click",e=>{if(e.target.id==="memoryModal")closeModal()});
+    $$(".capture-tab").forEach(t=>t.addEventListener("click",()=>setCapture(t.dataset.type)));
+    $$(".quick").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.capture)));
+    $("#saveMemory").onclick=async()=>{
+      const isEditing=Boolean(editingId);
+      if(!isEditing&&getMemoryCount()>=PLAN_DETAILS[currentPlan()].memoryLimit){showUpgrade("memory_limit");return}
+      if(!isEditing&&!await checkUsageAllowance("memories",1))return;
+      const fileName=$("#fileStatus").dataset.name;
+      const voiceText=$("#voiceStatus").dataset.transcript;
+      const title=captureType==="link"?($("#linkTitle").value||$("#linkUrl").value):
+        captureType==="image"?(fileName||"Image memory"):
+        captureType==="voice"?"Voice memory":$("#memoryTitle").value.trim();
+      const content=captureType==="link"?$("#linkUrl").value:
+        captureType==="image"?("Uploaded file: "+(fileName||"No file selected")):
+        captureType==="voice"?(voiceText||"Voice recording saved"):
+        $("#memoryContent").value.trim();
+      if(!title||(!content&&captureType==="text")){toast("Add a title and content before saving");return}
+      const category=$("#memoryCategory").value;
+      if(editingId){const m=memories.find(x=>x.id===editingId); Object.assign(m,{title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,updated:new Date().toISOString()});}
+      else memories.unshift({id:Date.now(),title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,summary:captureType==="text"?content.slice(0,110):title,favorite:false,deleted:false,created:new Date().toISOString().slice(0,10)});
+      save(); closeModal(); render(); toast(isEditing?"Memory updated":"Memory saved");
+    };
+    document.addEventListener("click",e=>{
+      const fav=e.target.closest("[data-favorite]"); if(fav){e.stopPropagation();const m=memories.find(x=>x.id===Number(fav.dataset.favorite));m.favorite=!m.favorite;save();render();toast(m.favorite?"Added to favorites":"Removed from favorites");return}
+      const card=e.target.closest(".memory-card"); if(card&&!e.target.closest("button")){const m=memories.find(x=>x.id===Number(card.dataset.id)); openModal(m.type,m)}
+      const res=e.target.closest(".search-result"); if(res){$("#searchOverlay").classList.remove("open");openPage("memories");const m=memories.find(x=>x.id===Number(res.dataset.id));openModal(m.type,m)}
+    });
+    $("#memorySearch").oninput=renderLibrary; $("#categoryFilter").onchange=renderLibrary;
+    $("#viewToggle").onclick=()=>{viewList=!viewList;renderLibrary();$("#viewToggle").innerHTML=icon(viewList?"list":"layout-grid");refreshIcons()};
+    $("#fileInput").onchange=e=>{
+      const file=e.target.files?.[0];
+      if(!file)return;
+      $("#fileStatus").textContent=file.name;
+      $("#fileStatus").dataset.name=file.name;
+    };
+    $("#voiceZone").onclick=()=>{
+      requireFeature("voice_capture").then(allowed=>{
+        if(!allowed)return;
+        const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+        if(!Recognition){$("#voiceStatus").textContent="Voice transcription needs browser speech recognition support";toast("Speech recognition is not available in this browser");return}
+        const recognition=new Recognition();
+        recognition.lang="en-US"; recognition.interimResults=false;
+        $("#voiceStatus").textContent="Listening...";
+        recognition.onresult=e=>{
+          const text=e.results[0][0].transcript;
+          $("#voiceStatus").textContent=text;
+          $("#voiceStatus").dataset.transcript=text;
+        };
+        recognition.onerror=()=>{$("#voiceStatus").textContent="Could not capture speech. Try again.";};
+        recognition.start();
+      });
+    };
+    ["globalSearch","topSearch"].forEach(id=>$("#"+id)?.addEventListener("click",openSearch));
+    $("#searchOverlay").addEventListener("click",e=>{if(e.target.id==="searchOverlay")e.currentTarget.classList.remove("open")});
+    $("#overlaySearch").oninput=e=>renderSearch(e.target.value);
+    document.addEventListener("keydown",e=>{
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openSearch()}
+      if(e.key==="Escape"){closeModal();$("#searchOverlay").classList.remove("open")}
+    });
+    $("#menuBtn").onclick=()=>$("#sidebar").classList.toggle("open");
+    function chatReply(question){
+      const q=question.toLower?.().toLowerCase()||"", active=memories.filter(m=>!m.deleted);
+      const words=q.split(/\W+/).filter(w=>w.length>3);
+      const matches=active.filter(m=>words.some(w=>`${m.title} ${m.content} ${m.category} ${m.tags?.join(" ")}`.toLowerCase().includes(w))).slice(0,3);
+      if(!matches.length)return "I couldn't find anything related to that in your memories.";
+      return `I found ${matches.length} relevant ${matches.length===1?"memory":"memories"}:<br><div class="recent-grid" style="margin-top:12px">${matches.map(card).join("")}</div>`;
+    }
+    function sendChat(){
+      const input=$("#chatInput"), q=input.value.trim(); if(!q)return;
+      $("#chatBody").insertAdjacentHTML("beforeend",`<div class="message user">${esc(q)}</div>`);
+      input.value="";
+      setTimeout(()=>{$("#chatBody").insertAdjacentHTML("beforeend",`<div class="message ai"><div class="ai-mark">${icon("sparkles")}</div><div>${chatReply(q)}</div></div>`);$("#chatBody").scrollTop=$("#chatBody").scrollHeight;refreshIcons()},260);
+    }
+    $("#chatSend").onclick=sendChat; $("#chatInput").onkeydown=e=>{if(e.key==="Enter")sendChat()};
+    $$(".suggestion").forEach(b=>b.onclick=()=>{$("#chatInput").value=b.textContent;sendChat()});
+    $("#newCollection").onclick=()=>toast("New collections will appear in your account");
+    $("#newReminder").onclick=openReminderModal;
+    $("#closeReminderModal").onclick=$("#cancelReminder").onclick=closeReminderModal;
+    $("#saveReminder").onclick=saveReminderRecord;
+    $("#reminderModal").addEventListener("click",event=>{if(event.target.id==="reminderModal")closeReminderModal()});
+    $("#notificationCenterBtn").onclick=openNotificationCenter;
+    $("#saveNotificationSettings").onclick=saveNotificationPreferences;
+    $("#notificationUpgradeButton").onclick=()=>showUpgrade(currentPlan()==="free"?"daily_briefing":"notification_customization");
+    $("#enablePushNotifications").onclick=enablePushNotifications;
+    $("#disablePushNotifications").onclick=disablePushNotifications;
+    $("#markAllNotificationsRead").onclick=async()=>{
+      if(!supabaseClient){toast("Notification history is stored in Supabase; it is unavailable in local preview.");return}
+      const {error}=await supabaseClient.from("notifications").update({read_at:new Date().toISOString()}).is("read_at",null);
+      if(error){toast(error.message||"Could not mark notifications as read.");return}
+      await refreshBriefing();
+    };
+    $("#deleteNotificationHistory").onclick=async()=>{
+      if(!supabaseClient){toast("Notification history is stored in Supabase; it is unavailable in local preview.");return}
+      if(!confirm("Clear all notification history? This cannot be undone."))return;
+      const {error}=await supabaseClient.from("notifications").delete().not("id","is",null);
+      if(error){toast(error.message||"Could not clear notification history.");return}
+      await refreshBriefing();
+    };
+    document.addEventListener("click",event=>{
+      const complete=event.target.closest("[data-complete-event]");
+      if(complete)completeBriefingEvent(complete.dataset.completeEvent);
+      const read=event.target.closest("[data-read-notification]");
+      if(read)updateNotification(read.dataset.readNotification,{read_at:new Date().toISOString()});
+      const snooze=event.target.closest("[data-snooze-notification]");
+      if(snooze)updateNotification(snooze.dataset.snoozeNotification,{snoozed_until:new Date(Date.now()+86400000).toISOString()});
+    });
+    $("#saveSettings").onclick=()=>{
+      if(!currentUser)return;
+      currentUser.name=$("#settingsName").value.trim()||currentUser.name;
+      const accounts=getAccounts();
+      const account=accounts.find(a=>a.email===currentUser.email);
+      if(account){account.name=currentUser.name;localStorage.setItem("rememberly_accounts",JSON.stringify(accounts));}
+      localStorage.setItem("rememberly_session",JSON.stringify(currentUser));
+      applyUser();toast("Settings saved");
+    };
+
+    function getAccounts(){ return JSON.parse(localStorage.getItem("rememberly_accounts")||"[]"); }
+    function bytesToHex(bytes){ return [...bytes].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+    function randomHex(bytes=16){ const values=new Uint8Array(bytes); crypto.getRandomValues(values); return bytesToHex(values); }
+    async function passwordHash(password,salt){
+      if(!crypto?.subtle){let hash=2166136261;for(const c of password){hash^=c.charCodeAt(0);hash=Math.imul(hash,16777619);}return (hash>>>0).toString(16)+":"+salt;}
+      const encoder=new TextEncoder();
+      const key=await crypto.subtle.importKey("raw",encoder.encode(password),"PBKDF2",false,["deriveBits"]);
+      const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:encoder.encode(salt),iterations:100000,hash:"SHA-256"},key,256);
+      return bytesToHex(new Uint8Array(bits));
+    }
+    function applyUser(){
+      if(!currentUser)return;
+      $("#app").classList.add("authenticated");
+      $("#authScreen").style.display="none";
+      const firstName=currentUser.name?.trim().split(/\s+/)[0]||"there";
+      const h=new Date().getHours();
+      $("#greeting").textContent=`Good ${h<12?"morning":h<18?"afternoon":"evening"}, ${firstName}`;
+      $("#chatGreeting").textContent=`Hello, ${firstName}.`;
+      $("#profileName").textContent=currentUser.name||"User";
+      $("#profileEmail").textContent=currentUser.email;
+      $("#profileAvatar").textContent=(currentUser.name||currentUser.email).trim().slice(0,2).toUpperCase();
+      $("#settingsName").value=currentUser.name||"";
+      $("#settingsEmail").value=currentUser.email;
+      memories=JSON.parse(localStorage.getItem(memoriesKey())||"[]");
+      documents=JSON.parse(localStorage.getItem(documentsKey())||"[]");
+      renderSubscription();
+      render();
+      refreshBriefing();
+      loadSubscription().catch(error=>toast(error.message||"Could not load subscription details."));
+      loadBillingReadiness();
+      if(new URLSearchParams(location.search).get("briefing")==="1")openPage("briefing");
+    }
+    $$(".auth-tab").forEach(tab=>tab.onclick=()=>{
+      authMode=tab.dataset.auth;
+      $$(".auth-tab").forEach(t=>t.classList.toggle("active",t===tab));
+      $("#registerNameGroup").style.display=authMode==="register"?"block":"none";
+      $("#authSubmit").textContent=authMode==="register"?"Create account":"Log in";
+      $("#authPassword").autocomplete=authMode==="register"?"new-password":"current-password";
+      $("#authError").textContent="";
+    });
+    $("#authSubmit").onclick=async()=>{
+      const email=$("#authEmail").value.trim().toLowerCase();
+      const password=document.querySelector("#authPassword").value;
+      const name=$("#authName").value.trim();
+      $("#authError").textContent="";
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ $("#authError").textContent="Enter a valid email address.";return; }
+      if(password.length<6){ $("#authError").textContent="Password must be at least 6 characters.";return; }
+      if(supabaseClient){
+        if(authMode==="register"&&!name){$("#authError").textContent="Enter your name.";return;}
+        const result=authMode==="register"
+          ?await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}})
+          :await supabaseClient.auth.signInWithPassword({email,password});
+        if(result.error){$("#authError").textContent=result.error.message;return}
+        if(!result.data.session){
+          $("#authError").textContent=authMode==="register"
+            ?"Email confirmation is enabled in Supabase. To sign up without verification, turn off Confirm email in your Supabase Auth settings."
+            :"Sign-in did not create an active session. Check your credentials and Supabase Auth settings.";
+          return;
+        }
+        currentUser={email:result.data.user.email,name:result.data.user.user_metadata?.full_name||name||email.split("@")[0]};
+        $("#authName").value="";$("#authPassword").value="";
+        applyUser();
+        return;
+      }
+      const accounts=getAccounts();
+      if(authMode==="register"){
+        if(!name){$("#authError").textContent="Enter your name.";return;}
+        if(accounts.some(a=>a.email===email)){ $("#authError").textContent="An account with this email already exists.";return; }
+        const salt=randomHex();
+        const hash=await passwordHash(password,salt);
+        const account={email,name,salt,hash};
+        accounts.push(account);
+        localStorage.setItem("rememberly_accounts",JSON.stringify(accounts));
+        currentUser={email,name};
+      }else{
+        const account=accounts.find(a=>a.email===email);
+        if(!account){ $("#authError").textContent="No account found for this email.";return; }
+        const hash=await passwordHash(password,account.salt);
+        if(hash!==account.hash){ $("#authError").textContent="Incorrect email or password.";return; }
+        currentUser={email:account.email,name:account.name};
+      }
+      localStorage.setItem("rememberly_session",JSON.stringify(currentUser));
+      $("#authName").value="";$("#authPassword").value="";
+      applyUser();
+    };
+    if(supabaseClient){
+      supabaseClient.auth.onAuthStateChange((_event,session)=>{
+        if(session?.user){
+          currentUser={email:session.user.email,name:session.user.user_metadata?.full_name||session.user.email.split("@")[0]};
+          applyUser();
+        }else if(currentUser){
+          currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];
+          $("#app").classList.remove("authenticated");$("#authScreen").style.display="grid";
+        }
+      });
+      supabaseClient.auth.getSession().then(({data,error})=>{
+        if(error){$("#authError").textContent=error.message;return}
+        if(data.session?.user){
+          const user=data.session.user;
+          currentUser={email:user.email,name:user.user_metadata?.full_name||user.email.split("@")[0]};
+          applyUser();
+        }
+      }).catch(error=>{$("#authError").textContent=error.message||"Could not restore your session."});
+    }
+    function documentStatus(doc){
+      const date=doc.expiration||doc.warrantyDate;
+      if(!date)return null;
+      const diff=Math.ceil((new Date(date+"T23:59:59")-new Date())/86400000);
+      if(diff<0)return "expired";
+      if(diff<=30)return "soon";
+      return "active";
+    }
+    function documentCard(doc){
+      const status=documentStatus(doc);
+      const thumb=doc.dataUrl&&doc.type?.startsWith("image/")?`<img src="${doc.dataUrl}" alt="">`:`${icon(doc.category==="Warranties"?"badge-check":doc.category==="Receipts"?"receipt-text":"file-text")}`;
+      const badge=status?`<span class="status-pill status-${status}">${status==="soon"?"Expiring soon":status[0].toUpperCase()+status.slice(1)}</span>`:"";
+      return `<article class="document-card" data-document-id="${doc.id}"><div class="document-thumb">${thumb}</div><h3>${esc(doc.name)}</h3><p>${esc(doc.category)} · ${esc(doc.size||"")}</p>${badge}<div class="document-actions"><button data-doc-preview="${doc.id}" title="Preview">${icon("eye")}</button><button data-doc-download="${doc.id}" title="Download">${icon("download")}</button><button data-doc-delete="${doc.id}" title="Delete">${icon("trash-2")}</button></div></article>`;
+    }
+    function renderVault(){
+      const categories=[
+        ["Personal Documents","contact"],["Financial Documents","landmark"],["Receipts","receipt-text"],["Warranties","badge-check"],
+        ["Contracts","file-signature"],["Insurance","shield"],["Travel","plane"],["Education","graduation-cap"],["Health","heart-pulse"],["Other","files"]
+      ];
+      const filter=$("#documentCategoryFilter")?.value||"", q=($("#documentSearch")?.value||"").toLowerCase();
+      $("#vaultCategories").innerHTML=categories.map(([name,iconName])=>`<button class="category-card" data-vault-category="${esc(name)}"><i>${icon(iconName)}</i><strong>${esc(name)}</strong><span>${documents.filter(d=>d.category===name).length} documents</span></button>`).join("");
+      const list=documents.filter(d=>(!filter||d.category===filter)&&(!q||`${d.name} ${d.category} ${d.description||""} ${d.tags||""} ${d.store||""} ${d.extractedText||""}`.toLowerCase().includes(q)));
+      $("#vaultGrid").innerHTML=list.length?list.map(documentCard).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="shield-check"></i><h2>Your document vault is empty</h2><p>Upload an important document to keep it safely organized.</p></div></div>`;
+      refreshIcons();
+    }
+    function renderWarranties(){
+      const filter=$("#warrantyFilter")?.value||"all";
+      const list=documents.filter(d=>d.category==="Warranties"&&(filter==="all"||documentStatus(d)===(filter==="soon"?"soon":filter)));
+      $("#warrantyGrid").innerHTML=list.length?list.map(documentCard).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="badge-check"></i><h2>No warranties found</h2><p>Add a warranty document to begin tracking coverage.</p></div></div>`;
+      refreshIcons();
+    }
+    function renderReceipts(){
+      const q=($("#receiptSearch")?.value||"").toLowerCase(), period=$("#receiptPeriod")?.value||"all";
+      let list=documents.filter(d=>d.category==="Receipts");
+      if(q)list=list.filter(d=>`${d.name} ${d.store||""} ${d.description||""} ${d.tags||""}`.toLowerCase().includes(q));
+      if(period!=="all"){
+        const now=new Date();
+        list=list.filter(d=>{const date=new Date(d.purchaseDate||d.createdAt);return period==="month"?date.getMonth()===now.getMonth()&&date.getFullYear()===now.getFullYear():date.getFullYear()===now.getFullYear();});
+      }
+      const total=list.reduce((sum,d)=>sum+(Number(d.amount)||0),0);
+      $("#receiptMetrics").innerHTML=`<div class="stat"><div class="stat-label">Recorded purchases</div><div class="stat-value">${list.length}</div></div><div class="stat"><div class="stat-label">Recorded total</div><div class="stat-value">${total ? total.toFixed(2):"0.00"}</div></div><div class="stat"><div class="stat-label">Monthly period</div><div class="stat-value">${period==="month"?"Yes":"—"}</div></div><div class="stat"><div class="stat-label">Yearly period</div><div class="stat-value">${period==="year"?"Yes":"—"}</div></div>`;
+      $("#receiptGrid").innerHTML=list.length?list.map(documentCard).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="receipt-text"></i><h2>No receipts found</h2><p>Receipts you save will be summarized here.</p></div></div>`;
+      refreshIcons();
+    }
+    function renderExpiration(){
+      const list=documents.filter(d=>d.expiration||d.warrantyDate).sort((a,b)=>new Date(a.expiration||a.warrantyDate)-new Date(b.expiration||b.warrantyDate));
+      $("#expirationTimeline").innerHTML=list.length?list.map(d=>{
+        const date=d.expiration||d.warrantyDate,status=documentStatus(d),color=status==="expired"?"#ff7e7e":status==="soon"?"#f5b86b":"#65d7a5";
+        return `<div class="timeline-item"><span class="timeline-dot" style="background:${color}"></span><div><strong style="font-size:12px">${esc(d.name)}</strong><div style="color:var(--muted);font-size:10px">${esc(formatDate(date))} · ${status==="soon"?"Expiring soon":status==="expired"?"Expired":"Valid"}</div></div></div>`;
+      }).join(""):`<div class="empty-page" style="min-height:300px"><div><i data-lucide="calendar-clock"></i><h2>No upcoming expirations</h2><p>Add expiration or warranty dates to documents to build your timeline.</p></div></div>`;
+      refreshIcons();
+    }
+    function openDocumentModal(doc=null){
+      if(!doc&&currentPlan()==="free"&&documents.length>=PLAN_DETAILS.free.documentLimit){showUpgrade("document_vault");return}
+      if(!doc&&currentPlan()!=="free"&&PLAN_DETAILS[currentPlan()].storageLimit&&getStorageUsed()>=PLAN_DETAILS[currentPlan()].storageLimit){showUpgrade("document_vault");return}
+      editingDocumentId=doc?.id||null;pendingDocumentFiles=[];
+      $("#documentModalTitle").textContent=doc?"Edit document":"Upload document";
+      $("#documentName").value=doc?.name||"";$("#documentDescription").value=doc?.description||"";$("#documentCategory").value=doc?.category||"Personal Documents";
+      $("#documentCustomCategory").value="";
+      $("#documentTags").value=doc?.tags||"";$("#documentExpiration").value=doc?.expiration||"";$("#documentPurchaseDate").value=doc?.purchaseDate||"";$("#documentWarrantyDate").value=doc?.warrantyDate||"";$("#documentStore").value=doc?.store||"";$("#documentReminder").value=doc?.reminder||"";
+      $("#documentProgressBar").style.width="0%";$("#documentModal").classList.add("open");
+    }
+    function closeDocumentModal(){ $("#documentModal").classList.remove("open");editingDocumentId=null;pendingDocumentFiles=[]; }
+    function processDocumentFiles(files){
+      const allowed=["application/pdf","image/jpeg","image/png","image/heic","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+      const valid=[...files].filter(f=>allowed.includes(f.type)||( /\.(pdf|jpe?g|png|heic|doc|docx)$/i.test(f.name)));
+      if(valid.length!==files.length)toast("Unsupported file type was skipped");
+      const oversized=valid.filter(f=>f.size>10*1024*1024);
+      if(oversized.length){toast("Files larger than 10 MB were skipped");}
+      pendingDocumentFiles=valid.filter(f=>f.size<=10*1024*1024);
+      const plan=PLAN_DETAILS[currentPlan()];
+      if(currentPlan()==="free"&&documents.length+pendingDocumentFiles.length>plan.documentLimit){
+        pendingDocumentFiles=pendingDocumentFiles.slice(0,Math.max(0,plan.documentLimit-documents.length));
+        showUpgrade("document_vault");
+      }
+      if(plan.storageLimit&&getStorageUsed()+pendingDocumentFiles.reduce((sum,file)=>sum+file.size,0)>plan.storageLimit){
+        pendingDocumentFiles=[];
+        showUpgrade("document_vault");
+      }
+      if(pendingDocumentFiles.length){
+        $("#documentName").value=pendingDocumentFiles[0].name.replace(/\.[^.]+$/,"");
+        $("#documentProgressBar").style.width="100%";toast(`${pendingDocumentFiles.length} file${pendingDocumentFiles.length===1?"":"s"} ready to review`);
+      }
+    }
+    $("#uploadDocument").onclick=()=>openDocumentModal();
+    $("#addWarranty").onclick=()=>{openDocumentModal();$("#documentCategory").value="Warranties";};
+    $("#addReceipt").onclick=()=>{openDocumentModal();$("#documentCategory").value="Receipts";};
+    $("#addExpiration").onclick=()=>openDocumentModal();
+    $("#closeDocumentModal").onclick=$("#cancelDocumentModal").onclick=closeDocumentModal;
+    $("#documentModal").addEventListener("click",e=>{if(e.target.id==="documentModal")closeDocumentModal();});
+    $("#documentFiles").onchange=e=>processDocumentFiles(e.target.files);
+    $("#documentDrop").addEventListener("dragover",e=>{e.preventDefault();e.currentTarget.style.borderColor="rgba(100,139,255,.7)";});
+    $("#documentDrop").addEventListener("dragleave",e=>{e.currentTarget.style.borderColor="rgba(100,139,255,.32)";});
+    $("#documentDrop").addEventListener("drop",e=>{e.preventDefault();e.currentTarget.style.borderColor="rgba(100,139,255,.32)";processDocumentFiles(e.dataTransfer.files);});
+    $("#saveDocument").onclick=async()=>{
+      if(!editingDocumentId&&!pendingDocumentFiles.length){toast("Select one or more documents first");return;}
+      if(!editingDocumentId&&!await checkUsageAllowance("documents",pendingDocumentFiles.length))return;
+      const requestedStorage=pendingDocumentFiles.reduce((sum,file)=>sum+file.size,0);
+      if(!editingDocumentId&&requestedStorage&&!await checkUsageAllowance("document_storage_bytes",requestedStorage))return;
+      const base={name:$("#documentName").value.trim(),description:$("#documentDescription").value.trim(),category:$("#documentCustomCategory").value.trim()||$("#documentCategory").value,tags:$("#documentTags").value.trim(),expiration:$("#documentExpiration").value,purchaseDate:$("#documentPurchaseDate").value,warrantyDate:$("#documentWarrantyDate").value,store:$("#documentStore").value.trim(),reminder:$("#documentReminder").value};
+      if(!base.name){toast("Enter a document name");return;}
+      if(editingDocumentId){const doc=documents.find(d=>d.id===editingDocumentId);Object.assign(doc,base);closeDocumentModal();saveDocuments();renderVault();renderWarranties();renderReceipts();renderExpiration();render();refreshBriefing();toast("Document updated");return;}
+      pendingDocumentFiles.forEach((file,index)=>{
+        const reader=new FileReader();
+        reader.onload=()=>{
+          const doc={id:Date.now()+index,...base,name:pendingDocumentFiles.length>1?file.name.replace(/\.[^.]+$/,""):base.name,type:file.type,size:file.size<1048576?`${Math.max(1,Math.round(file.size/1024))} KB`:`${(file.size/1048576).toFixed(1)} MB`,fileSize:file.size,dataUrl:reader.result,extractedText:"",createdAt:new Date().toISOString()};
+          documents.unshift(doc);
+          try{saveDocuments();}catch(e){documents.shift();toast("This file is too large for local browser storage");return;}
+          renderVault();renderWarranties();renderReceipts();renderExpiration();render();refreshBriefing();
+          if(index===pendingDocumentFiles.length-1){closeDocumentModal();toast("Document saved locally");}
+        };
+        reader.onerror=()=>toast("Could not read "+file.name);
+        reader.readAsDataURL(file);
+      });
+    };
+    $("#documentSearch").oninput=renderVault;$("#documentCategoryFilter").onchange=renderVault;
+    $("#receiptSearch").oninput=renderReceipts;$("#receiptPeriod").onchange=renderReceipts;
+    $("#warrantyFilter").onchange=renderWarranties;
+    document.addEventListener("click",e=>{
+      const docSearch=e.target.closest("[data-document-search]");
+      if(docSearch){$("#searchOverlay").classList.remove("open");openPage("vault");const doc=documents.find(d=>d.id===Number(docSearch.dataset.documentSearch));if(doc)openDocumentModal(doc);return;}
+      const cat=e.target.closest("[data-vault-category]");if(cat){$("#documentCategoryFilter").value=cat.dataset.vaultCategory;renderVault();}
+      const preview=e.target.closest("[data-doc-preview]");if(preview){const doc=documents.find(d=>d.id===Number(preview.dataset.docPreview));if(doc?.dataUrl)window.open(doc.dataUrl,"_blank");else toast("Preview is not available for this document");}
+      const download=e.target.closest("[data-doc-download]");if(download){const doc=documents.find(d=>d.id===Number(download.dataset.docDownload));if(!doc?.dataUrl){toast("This document has no downloadable file");return;}const a=document.createElement("a");a.href=doc.dataUrl;a.download=doc.name||"document";a.click();}
+      const del=e.target.closest("[data-doc-delete]");if(del){const id=Number(del.dataset.docDelete);if(confirm("Delete this document and its stored metadata?")){documents=documents.filter(d=>d.id!==id);saveDocuments();removeSyncedDocumentEvents(id).then(refreshBriefing);renderVault();renderWarranties();renderReceipts();renderExpiration();render();toast("Document deleted");}}
+    });
+    $("#logoutBtn").onclick=async()=>{
+      if(supabaseClient){
+        const {error}=await supabaseClient.auth.signOut();
+        if(error){toast(error.message||"Could not sign out.");return}
+      }
+      localStorage.removeItem("rememberly_session");
+      currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];
+      $("#app").classList.remove("authenticated");
+      $("#authScreen").style.display="grid";
+      $("#authEmail").value="";$("#authPassword").value="";
+      $$(".auth-tab").forEach(t=>t.classList.toggle("active",t.dataset.auth==="login"));
+      $("#registerNameGroup").style.display="none";$("#authSubmit").textContent="Log in";authMode="login";
+    };
+    const savedSession=JSON.parse(localStorage.getItem("rememberly_session")||"null");
+    if(!supabaseClient&&savedSession){
+      const account=getAccounts().find(a=>a.email===savedSession.email);
+      if(account){currentUser={email:account.email,name:account.name};applyUser();}
+    }
+  </script>
+</body>
+</html>
