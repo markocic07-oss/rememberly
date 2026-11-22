@@ -5,7 +5,7 @@ The app stays in an explicitly labeled Free development preview until Supabase a
 ## 1. Configure Supabase
 
 1. Create a Supabase project and enable email/password authentication. To allow users to register without verifying their email, open **Authentication → Providers → Email** in the Supabase Dashboard and turn off **Confirm email**. This is a project-level Supabase setting; the app cannot disable it itself. With confirmation disabled, Supabase returns an authenticated session immediately after signup. This reduces protection against mistyped or unverified email addresses.
-2. Apply both `supabase/migrations/20261120000000_subscription_billing.sql` and `supabase/migrations/20261120120000_daily_briefing.sql` with the Supabase CLI or SQL editor.
+2. Apply the migrations in `supabase/migrations/` with the Supabase CLI or SQL editor, including `20261120000000_subscription_billing.sql`, `20261120120000_daily_briefing.sql`, `20261121100000_memories.sql`, and `20261121130000_receipts.sql`.
 3. Set `supabaseUrl` and the project's publishable/anon key in `config.js`.
 4. Serve the app from an HTTP(S) origin. Add the deployed site origin to the Supabase Auth URL allow-list.
 5. In Supabase Edge Function secrets, set:
@@ -43,6 +43,10 @@ supabase functions deploy billing-status
 supabase functions deploy generate-daily-briefings
 ```
 
+### Receipts and subscription records
+
+Apply `supabase/migrations/20261121130000_receipts.sql` before deploying the matching app update. It creates the owner-protected `public.receipts` table and the private `receipt-files` Storage bucket with per-user object policies. Receipt metadata and subscription amounts are saved in the table; attached receipt files are uploaded to Storage. On first sign-in after the update, locally cached receipts are migrated to Supabase. Other document categories remain browser-local.
+
 Generate a VAPID key pair with a trusted Web Push tooling installation, and use a unique random scheduler secret. Do not commit either private value. Put the matching public VAPID key in `config.js` as `vapidPublicKey` (the public key is safe to expose).
 
 ### Daily briefing scheduling
@@ -73,9 +77,9 @@ The scheduler reads title, category, and date metadata from `briefing_events`. T
 
 ## 2. Important current application boundary
 
-Authentication switches to Supabase Auth when `config.js` contains project credentials. Existing memories and documents remain in the browser's `localStorage`, keyed by account email; signing up with the same email keeps that browser's locally stored data available. They are not uploaded or backed up to Supabase.
+Authentication switches to Supabase Auth when `config.js` contains project credentials. Memories are stored in the user's `public.memories` rows and loaded from Supabase after sign-in. Existing local memories are uploaded when the account first syncs; the browser keeps a local cache and retries pending memory writes on a later sync. Row-level security restricts memory reads and writes to the authenticated owner. Receipts and subscription metadata are stored in `public.receipts`; attached receipt files are stored in the private `receipt-files` Supabase Storage bucket. Existing local receipts are uploaded on sign-in, while other document categories and their files remain in browser `localStorage`.
 
-The subscription tables, webhook synchronization, and server-side `has_feature` / `validate_usage_limit` database functions are ready for a server-backed data API. This single-file app still stores memories and documents locally, so its visible memory/document caps and gated screens are client-side UX checks, not tamper-proof enforcement. Do not treat those local records or limits as production-secure until memory/document writes and storage are migrated to authenticated server-side operations that call the database access and usage checks.
+Subscription tables, webhook synchronization, and server-side `has_feature` / `validate_usage_limit` database functions are also provided. Memory caps and gated screens in the browser are still user-experience checks, not tamper-proof enforcement; document storage and usage checks are not yet fully server-backed. Do not treat the current subscription limits as production-secure until all relevant writes and usage accounting are enforced by authenticated server-side operations.
 
 The existing app also does not yet connect external AI/OCR services or implement all Premium modules (subscription tracking, travel organization, inventory, and advanced analytics). Their plan definitions/access flags are present, but those services must be completed before selling plans that promise them.
 

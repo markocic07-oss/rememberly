@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div>
+        <img src="Glossy Multicolor Torch Emblem.png" height="70px" width="140px">
+        </div>
+        <div>
+            <nav class="nav">
+                <a href="index.html">Pocetna</a>
+                <a href="olimpijske-igre.html">Olimpijske igre</a>
+                <a href="statistika.html">Statistika</a>
+                <a href="korisnici.html">Korisnici</a>
+            </nav>
+    
+        </div>
+        <div>
+        <button class="reg" onclick="openRegister()">Registracija</button>
+        <div id="registerPopup" class="popup">
+
+    <div class="register-content">
+
+        <span class="close" onclick="closeRegister()">&times;</span>
+
+        <h2>Create Account</h2>
+        <p>Register to get started</p>
+
+        <form id="registerForm" novalidate>
+
+            <label>Email</label>
+            <input type="email" id="email" placeholder="Email address">
+            <small id="emailError"></small>
+
+            <label> Confirm Email *</label>
+            <input type="email" id="confirmEmail" placeholder="Confirm Email address">
+            <small id="confirmEmailError"></small>
+
+            <label>First Name *</label>
+            <input type="text" id="firstName" placeholder="First name">
+            <small id="firstNameError"></small>
+
+            <label>Last Name *</label>
+            <input type="text" id="lastName" placeholder="Last name">
+            <small id="lastNameError"></small>
+
+            <label>Password *</label>
+            <input type="password" id="password" placeholder="Password">
+            <small id="passwordError"></small>
+
+            <label>Confirm Password *</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm password">
+            <small id="confirmPasswordError"></small>
+
+            <label>Date of Birth (Optional)</label>
+            <input type="date" id="birthDate">
+            <small id="birthDateError"></small>
+
+            <label>Address (Optional)</label>
+            <input type="text" id="address" placeholder="Your address">
+
+            <button type="submit">Create Account</button>
+
+            <p id="registerMessage"></p>
+
+        </form>
+
+    </div>
+</div>
+
+        <button class="pri" onclick="openLogin()">Prijava</button>
+        </div>
+        <div id="loginPopup" class="popup">
+    <div class="popup-content">
+
+        <span class="close" onclick="closeLogin()">&times;</span>
+
+        <h2>Dorodosli!</h2>
+        <p>Prijavite se na Vas nalog</p>
+
+        <form>
+            <input type="email" placeholder="Email Address" required>
+
+            <input type="password" placeholder="Password" required>
+
+            <button type="submit">Prijava</button>
+        </form>
+
+    </div>
+</div>
+            
+    </header>
+    <div class="div2">
+        <img src="8619732-paris-2024-announces-paralympic-games.jpg" height="500px" width="100%">
+        
+        <h1>OLIMPIJSKE <br>IGRE</h1>
+    </div>
+    <div>
+        
+    
+        
+    <section class="filter-section">
+
+    <div class="filter-item">
+        <label for="naziv">Naziv</label>
+        <input type="text" id="naziv" placeholder="npr. 100 m">
+    </div>
+
+    <div class="filter-item">
+        <label for="sport">Sport</label>
+        <input type="text" id="sport" placeholder="npr. atletika">
+    </div>
+
+    <div class="filter-item">
+        <label for="izdanje">Izdanje igara</label>
+        <select id="izdanje">
+            <option value="">Sva izdanja</option>
+            <option value="pariz2024">Pariz 2024</option>
+            <option value="tokio2020">Tokio 2020</option>
+            <option value="rio2016">Rio 2016</option>
+        </select>
+    </div>
+
+    <div class="filter-item">
+        <label for="tip">Tip</label>
+        <select id="tip">
+            <option value="">Individualna i timska</option>
+            <option value="individualna">Individualna</option>
+            <option value="timska">Timska</option>
+        </select>
+    </div>
+
+    <div class="filter-item">
+        <label for="drzava">Država na postolju</label>
+        <select id="drzava">
+            <option value="">Sve države</option>
+            <option value="srbija">Srbija</option>
+            <option value="usa">SAD</option>
+            <option value="kina">Kina</option>
+            <option value="francuska">Francuska</option>
+        </select>
+    </div>
+
+    <div class="filter-item">
+        <label for="medalja">Medalja</label>
+        <select id="medalja">
+            <option value="">Zlato, srebro ili bronza</option>
+            <option value="zlato">Zlato</option>
+            <option value="srebro">Srebro</option>
+            <option value="bronza">Bronza</option>
+        </select>
+    </div>
+
+    <div class="filter-item">
+        <label>Broj finalista</label>
+        <div class="range-inputs">
+            <input type="number" placeholder="od 2">
+            <input type="number" placeholder="do 100">
+        </div>
+    </div>
+
+    <div class="filter-item">
+        <label for="sortiranje">Sortiranje</label>
+        <select id="sortiranje">
+            <option value="az">Naziv, A–Z</option>
+            <option value="za">Naziv, Z–A</option>
+            <option value="rastuce">Broj finalista, rastuće</option>
+            <option value="opadajuce">Broj finalista, opadajuće</option>
+        </select>
+    </div>
+        <div> <a href="dodavanje.html" target="_blank"><button class="dodati_disciplina">+ Dodaj Disciplinu</button></a></div>
+</section>
+<div><h1 class="dis"><a name="discipline-grid">DISCIPLINE</a></h1></div>
+
+    
+
+<section class="discipline-grid">
+
+    <!-- PRVA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="men-s-running-event-olympic-sports-ofh5ckbutl16vpaz-2396952633.jpg" alt="Atletika">
+
+        <div class="discipline-content">
+
+            <h3>100 m, muškarci</h3>
+
+            <ol class="lista">
+                <li>Noah Lyles · SAD 🇺🇸 🥇</li>
+                <li>Kishane Thompson · Jamajka 🇯🇲 🥈</li>
+                <li>Fred Kerley · SAD 🇺🇸 🥉</li>
+            </ol>
+
+            <p>Atletika · Pariz 2024 · Muškarci · Individualna</p>
+
+            <a href="atletika.html"><button>Detalji</button></a>
+
+        </div>
+
+    </div>
+
+
+    <!-- DRUGA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="1140610-3840x2160-desktop-4k-swimming-background-photo-1668146296.jpg" alt="Plivanje">
+
+        <div class="discipline-content">
+
+            <h3>200 m leptir</h3>
+            
+            <ol class="lista">
+                <li>Léon Marchand · Francuska 🇫🇷 🥇</li>
+                <li>Kristóf Milák · JMađarska 🇭🇺 🥈</li>
+                <li>Ilya Kharun · Kanada 🇨🇦 🥉</li>
+            </ol>
+
+            <p>Plivanje · Pariz 2024 · Muškarci · Individualna</p>
+
+            <a href="plivanje.html"><button>Detalji</button></a>
+
+        </div>
+
+    </div>
+
+
+    <!-- TREĆA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="74ede241668b5a6c8ec81bf59e6d4ec2-4012258026.jpg" alt="Fudbal">
+
+        <div class="discipline-content">
+
+            <h3>Fudbal, muškarci</h3>
+
+            <ol class="lista">
+                <li>Španija · Španija 🇪🇸 🥇</li>
+                <li>Francuska · Francuska 🇫🇷 🥈</li>
+                <li>Maroko · Maroko 🇲🇦 🥉</li>
+            </ol>
+
+            <p>Fudbal · Pariz 2024 · Muškarci · Timska</p>
+
+            <a href="fudbal.html"><button>Detalji</button></a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="discipline-grid">
+
+    <!-- PRVA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="basketball-hoop-at-sunset-desktop-wallpaper-cover-1988271378.jpg" alt="Kosarka">
+
+        <div class="discipline-content">
+
+            <h3>Kosarka 5 na 5</h3>
+
+            <ol class="lista">
+                <li>Sjedinjene Americke Drzave · SAD 🇺🇸 🥇</li>
+                <li>Srbija · Srbija 🇷🇸 🥈</li>
+                <li>Španija · Španija 🇪🇸 🥉</li>
+            </ol>
+
+            <p>Kosarka · Rio 2016 · Muškarci · Timska</p>
+
+            <button>Detalji</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- DRUGA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="umetnicko-klizanje-4174351525.webp" alt="Klizanje">
+
+        <div class="discipline-content">
+
+            <h3>Umetnicko klizanje, pojedinacno</h3>
+
+            <ol class="lista">
+                <li>Mikhail Shaidorov · Kazahstan 🇰🇿 🥇</li>
+                <li>Yuma Kagiyama · Japan 🇯🇵 🥈</li>
+                <li>Shun Sato · Japan 🇯🇵 🥉</li>
+            </ol>
+
+            <p>Klizanje · Tokyo 2020 · Mesovito · Individualna</p>
+
+            <button>Detalji</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- TREĆA KARTICA -->
+    <div class="discipline-box">
+
+        <img src="abad4ee3-22d1-4983-8813-0718e7d1df8e-3787607916.jpg" alt="Rukomet">
+
+        <div class="discipline-content">
+
+            <h3>Rukomet, muskarci</h3>
+
+            <ol class="lista">
+                <li>Danska  · Danska 🇩🇰 🥇</li>
+                <li>Francuska · Francuska 🇫🇷 🥈</li>
+                <li>Nemačka · Nemačka 🇩🇪 🥉</li>
+            </ol>
+
+            <p>Rukomet · Rio 2016 · Mesovito · Timska</p>
+
+            <button>Detalji</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <footer>
+        <h3 class="footer"> Created by Marko Okram Kocic</h3>
+    </footer>
+
+    
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    body{
+        background-color: #141414;
+        position: relative;
+        margin: 0px;
+        
+    }
+
+    header{
+        background-color: #202020;
+        border-radius: 20px;
+        margin-bottom: 0%;
+        display: flex;
+        position: fixed;
+        width: 100%;
+        z-index: 100;
+        
+        
+    }
+    .disciplina{
+        padding: 12px 17px 12px 12px;
+        position: absolute;
+        color: rgb(254, 254, 254);
+        margin-top: 0%;
+        top: 20%;
+        left: 13%;
+        background-color: #FF5A1F;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        box-shadow: #030303 0 0 60px;
+        border: 0px;
+    }
+    button:hover{
+        background-color: white;
+        color: black;
+        transform: scale(1.1);
+        transition: 0.3s;
+        
+        
+    }
+
+
+    div{
+        margin-left: 20px;
+        padding: 10px;
+    }
+    .div2{
+        margin-top: 0%;
+        opacity: 100%;
+        position: relative;
+        margin-left: 0%;
+        
+        
+        
+    }
+    .div2 img{
+        display: block;
+        opacity: 100%;
+        margin-left: 0%;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0px;
+        
+    }
+
+    .div2 h1{
+        position: absolute;
+        color: white;
+        margin-top: 4%;
+        top: 24%;
+        left: 12%;
+        font-size: 72px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        text-shadow: 0 0 50px rgb(6, 6, 6);
+        width: 150px;
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+        
+
+    
+
+    .nav{
+        display: flex;
+        gap: 5px;
+        
+    }
+    .nav a{
+        color: white;
+        padding-top: 30px;
+        display: flex;
+        margin-left: 150px;
+        font-family: 'Times New Roman', Times, serif;
+    
+    }
+    .nav a:hover{
+        color: rgb(132, 132, 172);
+    }
+   
+    
+
+
+    .dis{
+        color: white;
+        border-left: solid 4px #D8B56D;
+        padding: 0px 0px 0px 10px;
+        margin-bottom: 0px;
+    }
+    .box{
+        background-color: black;
+    }
+
+.filter-section {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    padding: 20px;
+    background-color: #30302D;
+    
+    border-radius: 14px;
+    margin-top: 0px;
+    
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-item label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fcfcfc;
+}
+
+.filter-item input,
+.filter-item select {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #ccd1d8;
+    border-radius: 8px;
+    background-color: rgb(251, 251, 252);
+    font-size: 13px;
+    color: #030303;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.filter-item input:focus,
+.filter-item select:focus {
+    border-color: #0875d1;
+    box-shadow: 0 0 0 3px rgba(8, 117, 209, 0.12);
+}
+
+.range-inputs {
+    display: flex;
+    gap: 7px;
+}
+
+.range-inputs input {
+    min-width: 0;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .filter-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobilni telefon */
+@media (max-width: 600px) {
+    .filter-section {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 14px;
+        gap: 12px;
+    }
+}
+
+.reg{
+    margin-top: 22px;
+    margin-left: 60px;
+    padding: 10px;
+    background-color: rgba(254, 255, 255, 0);
+    border: 1px solid #D8B56D;
+    border-radius: 10px;
+    color: white;
+}
+.pri{
+    margin-top: 20px;
+    
+    padding: 10px;
+    background-color: #FF5A1F;
+    border: 0px;
+    border-radius: 10px;
+    margin-left: 10px;
+    
+    color: white;
+
+    
+}
+
+
+.discipline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+    scroll-behavior: smooth;
+}
+
+
+.discipline-box {
+    background: rgb(252, 252, 252);
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-top: 0px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    
+}
+
+.discipline-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.discipline-box img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.discipline-content {
+    padding: 15px;
+}
+
+.discipline-content h3 {
+    font-size: 18px;
+    margin-bottom: 7px;
+}
+
+.discipline-content p {
+    color: #3c3b3b;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.discipline-content button {
+    width: 100%;
+    padding: 11px;
+    background: #0875cf;
+    color: rgb(5, 5, 5);
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.discipline-content button:hover {
+    background: #005da9;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+    .discipline-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* TELEFON */
+@media (max-width: 600px) {
+    .discipline-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.discipline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.discipline-box {
+    background: rgb(250, 250, 248);
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.discipline-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.discipline-box img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.discipline-content {
+    padding: 10px;
+}
+
+.discipline-content h3 {
+    font-size: 20px;
+    margin-bottom: 7px;
+    margin-top: 3%;
+    color: rgb(5, 5, 5);
+}
+
+.discipline-content p {
+    color: #070707;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.discipline-content button {
+    width: 92%;
+    padding: 11px;
+    background: #D8B56D;
+    color: rgb(251, 248, 248);
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-left: 0%;
+}
+
+.discipline-content button:hover {
+    background: #D8B56D;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+    .discipline-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* TELEFON */
+@media (max-width: 600px) {
+    .discipline-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dodati_disciplina {
+    margin-top: 25px;
+    padding: 10px;
+    background-color: rgba(255, 217, 0, 0);
+    border-radius: 8px;
+    color: white;
+    border: 1px solid #D8B56D;
+    font-size: 12px;
+    
+}
+
+.footer{
+    background-color: black;
+    color: white;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0%;
+    margin-top: 70px;
+}
+.lista{
+    color: rgb(6, 6, 6);
+    
+}
+div> h4{
+    color: #FF5A1F;
+    margin-left: 1250px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-style: oblique;
+    margin-top: 0%;
+    margin-bottom: 1%;
+    font-weight: 500;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 35px;
+    width: 350px;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.popup-content input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+.popup-content button {
+    width: 100%;
+    padding: 12px;
+    cursor: pointer;
+    background: #FF5A1F;
+    color: white;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.register-content {
+    background: white;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 15px;
+    position: relative;
+    margin: 20px;
+}
+
+.register-content h2 {
+    text-align: center;
+}
+
+.register-content label {
+    display: block;
+    margin-top: 12px;
+}
+
+.register-content input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.register-content button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    cursor: pointer;
+    background: #FF5A1F;
+    color: white;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.register-content small {
+    color: red;
+    display: block;
+}
+
+#registerMessage {
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Responsive layout */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.div2 img {
+    width: 100%;
+    height: clamp(280px, 52vw, 500px);
+    object-fit: cover;
+}
+
+header {
+    left: 0;
+    top: 0;
+}
+
+@media (max-width: 1200px) {
+    .nav a {
+        margin-left: clamp(20px, 5vw, 70px);
+    }
+
+    .reg {
+        margin-left: 20px;
+    }
+
+    .filter-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    header {
+        position: relative;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 0;
+    }
+
+    header > div {
+        margin-left: 0;
+        padding: 6px;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px 12px;
+    }
+
+    .nav a {
+        margin-left: 0;
+        padding-top: 8px;
+    }
+
+    .reg,
+    .pri {
+        margin-top: 6px;
+    }
+
+    .reg {
+        margin-left: 0;
+    }
+
+    .div2 h1 {
+        left: 8%;
+        top: 22%;
+        font-size: clamp(38px, 8vw, 58px);
+    }
+
+    .disciplina {
+        left: 8%;
+        top: 68%;
+        font-size: 15px;
+    }
+
+    .discipline-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .discipline-box {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .filter-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+
+    header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    header > div:nth-child(1) {
+        grid-column: 1;
+    }
+
+    header > div:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+    }
+
+    header > div:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        gap: 6px;
+    }
+
+    header img {
+        height: 52px;
+        width: 105px;
+    }
+
+    .nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        text-align: center;
+    }
+
+    .nav a {
+        justify-content: center;
+        padding: 8px 4px;
+        font-size: 13px;
+    }
+
+    .reg,
+    .pri {
+        margin: 0;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .div2 img {
+        height: 300px;
+    }
+
+    .div2 h1 {
+        left: 7%;
+        top: 22%;
+        font-size: 38px;
+        line-height: 1.1;
+        width: 170px;
+    }
+
+    .disciplina {
+        top: 72%;
+        left: 7%;
+        padding: 9px 12px;
+        font-size: 13px;
+    }
+
+    .filter-section {
+        grid-template-columns: 1fr;
+        margin: 12px;
+        padding: 12px;
+    }
+
+    .range-inputs {
+        margin: 0;
+        padding: 0;
+    }
+
+    .dodati_disciplina {
+        width: 100%;
+    }
+
+    .dis {
+        margin: 18px 12px 8px;
+    }
+
+    .discipline-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin: 12px;
+    }
+
+    .discipline-box {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .discipline-box img {
+        height: clamp(160px, 48vw, 220px);
+    }
+
+    .discipline-content button {
+        width: 100%;
+    }
+
+    .footer {
+        height: 80px;
+        margin-top: 35px;
+        text-align: center;
+        padding: 0 12px;
+    }
+
+    .popup-content,
+    .register-content {
+        width: calc(100% - 32px);
+        max-height: 82vh;
+        box-sizing: border-box;
+    }
+}
+
+</style>
+
+<script>
+
+function openLogin() {
+    document.getElementById("loginPopup").style.display = "flex";
+}
+
+function closeLogin() {
+    document.getElementById("loginPopup").style.display = "none";
+}
+
+// Close when clicking outside the popup
+window.onclick = function(event) {
+    let popup = document.getElementById("loginPopup");
+
+    if (event.target == popup) {
+        closeLogin();
+    }
+}
+
+function openRegister() {
+    document.getElementById("registerPopup").style.display = "flex";
+}
+
+function closeRegister() {
+    document.getElementById("registerPopup").style.display = "none";
+}
+
+window.onclick = function(event) {
+    let popup = document.getElementById("registerPopup");
+
+    if (event.target == popup) {
+        closeRegister();
+    }
+};
+
+
+
+</script>

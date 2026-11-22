@@ -40,6 +40,7 @@
     .document-thumb img { width:100%;height:100%;object-fit:cover } .document-thumb svg { width:26px }
     .document-card h3 { margin:0 0 5px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
     .document-card p { margin:0;color:var(--muted);font-size:10px }
+    .document-subscription-cost { display:block;margin-top:8px;color:#91aaff;font-size:12px;font-weight:700 }
     .document-actions { display:flex;justify-content:flex-end;gap:5px;margin-top:11px }
     .document-actions button { width:30px;height:30px;border:1px solid var(--border);border-radius:8px;background:#101827;color:var(--muted);display:grid;place-items:center }
     .document-actions svg { width:14px }
@@ -111,6 +112,11 @@
     .memory-kind i { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:rgba(100,139,255,.09); color:#88a6f8; }
     .memory-kind svg { width:14px; } .favorite { border:0; background:transparent; color:#68758a; padding:3px; } .favorite.active { color:#f4b86d; }
     .favorite svg { width:16px; } .memory-card h3 { margin:14px 0 7px; font-size:14px; }
+    .memory-card-actions { display:flex; align-items:center; gap:3px; }
+    .memory-delete { border:0; background:transparent; color:#68758a; padding:3px; }
+    .memory-delete:hover { color:#ff8b8b; }
+    .memory-delete svg { width:16px; }
+    .danger-btn { border:1px solid rgba(255,126,126,.22); border-radius:10px; background:rgba(255,126,126,.08); color:#ff9b9b; padding:9px 12px; }
     .memory-card p { margin:0; color:var(--muted); font-size:12px; line-height:1.55; height:38px; overflow:hidden; }
     .memory-meta { display:flex; align-items:center; justify-content:space-between; margin-top:15px; }
     .badge { padding:5px 8px; border-radius:7px; background:rgba(139,114,255,.1); color:#a99cf8; font-size:10px; }
@@ -448,7 +454,7 @@
       </section>
     </main>
   </div>
-  <div class="modal-backdrop" id="memoryModal"><div class="modal"><div class="modal-head"><h2 id="modalTitle">New memory</h2><button class="icon-btn" id="closeModal"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="capture-tabs" id="captureTabs"><button class="capture-tab active" data-type="text">Text</button><button class="capture-tab" data-type="voice">Voice</button><button class="capture-tab" data-type="image">Image</button><button class="capture-tab" data-type="link">Link</button></div><div id="captureText"><div class="form-group"><label>Title</label><input id="memoryTitle" placeholder="Give this memory a clear title"></div><div class="form-group"><label>Content</label><textarea id="memoryContent" placeholder="What do you want to remember?"></textarea></div><div class="form-row"><div class="form-group"><label>Category</label><select id="memoryCategory"><option>Personal</option><option>Work</option><option>Ideas</option><option>Shopping</option><option>Travel</option></select></div><div class="form-group"><label>Tags</label><input id="memoryTags" placeholder="e.g. restaurant, summer"></div></div></div><div id="captureVoice" style="display:none"><div class="drop-zone" id="voiceZone"><div><i data-lucide="mic"></i><strong>Tap to start recording</strong><span id="voiceStatus">Voice transcription will appear here</span></div></div></div><div id="captureImage" style="display:none"><label class="drop-zone" id="dropZone"><input type="file" accept="image/*,.pdf" id="fileInput" style="display:none"><div><i data-lucide="image-plus"></i><strong>Drop a file here or browse</strong><span id="fileStatus">Images and PDFs up to 10 MB</span></div></label></div><div id="captureLink" style="display:none"><div class="form-group"><label>Website URL</label><input id="linkUrl" type="url" placeholder="https://example.com"></div><div class="form-group"><label>Title</label><input id="linkTitle" placeholder="Optional title"></div></div></div><div class="modal-actions"><button class="secondary-btn" id="cancelModal">Cancel</button><button class="primary-btn" id="saveMemory">Save memory</button></div></div></div>
+  <div class="modal-backdrop" id="memoryModal"><div class="modal"><div class="modal-head"><h2 id="modalTitle">New memory</h2><button class="icon-btn" id="closeModal"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="capture-tabs" id="captureTabs"><button class="capture-tab active" data-type="text">Text</button><button class="capture-tab" data-type="voice">Voice</button><button class="capture-tab" data-type="image">Image</button><button class="capture-tab" data-type="link">Link</button></div><div id="captureText"><div class="form-group"><label>Title</label><input id="memoryTitle" placeholder="Give this memory a clear title"></div><div class="form-group"><label>Content</label><textarea id="memoryContent" placeholder="What do you want to remember?"></textarea></div><div class="form-row"><div class="form-group"><label>Category</label><select id="memoryCategory"><option>Personal</option><option>Work</option><option>Ideas</option><option>Shopping</option><option>Travel</option></select></div><div class="form-group"><label>Tags</label><input id="memoryTags" placeholder="e.g. restaurant, summer"></div></div></div><div id="captureVoice" style="display:none"><div class="drop-zone" id="voiceZone"><div><i data-lucide="mic"></i><strong>Tap to start recording</strong><span id="voiceStatus">Voice transcription will appear here</span></div></div></div><div id="captureImage" style="display:none"><label class="drop-zone" id="dropZone"><input type="file" accept="image/*,.pdf" id="fileInput" style="display:none"><div><i data-lucide="image-plus"></i><strong>Drop a file here or browse</strong><span id="fileStatus">Images and PDFs up to 10 MB</span></div></label></div><div id="captureLink" style="display:none"><div class="form-group"><label>Website URL</label><input id="linkUrl" type="url" placeholder="https://example.com"></div><div class="form-group"><label>Title</label><input id="linkTitle" placeholder="Optional title"></div></div></div><div class="modal-actions"><button class="danger-btn" id="deleteMemory" style="display:none;margin-right:auto">Delete permanently</button><button class="secondary-btn" id="cancelModal">Cancel</button><button class="primary-btn" id="saveMemory">Save memory</button></div></div></div>
   <div class="modal-backdrop" id="documentModal"><div class="modal" style="width:min(720px,100%)"><div class="modal-head"><h2 id="documentModalTitle">Upload document</h2><button class="icon-btn" id="closeDocumentModal"><i data-lucide="x"></i></button></div><div class="modal-body">
     <label class="document-upload" id="documentDrop"><input type="file" id="documentFiles" multiple accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx" style="display:none"><span><i data-lucide="cloud-upload" style="width:28px;height:28px"></i><strong>Drop documents here or browse</strong><span style="font-size:11px">PDF, JPG, PNG and supported documents · 10 MB each</span></span></label>
     <p style="margin:8px 0 0;color:var(--muted);font-size:10px">OCR and external AI are not connected. Review all metadata manually; sensitive files are never sent to an external provider from this local version.</p>
@@ -459,6 +465,10 @@
     <div class="form-row"><div class="form-group"><label>Tags</label><input id="documentTags" placeholder="passport, travel, 2026"></div><div class="form-group"><label>Expiration / renewal date</label><input id="documentExpiration" type="date"></div></div>
     <div class="form-row"><div class="form-group"><label>Purchase date</label><input id="documentPurchaseDate" type="date"></div><div class="form-group"><label>Warranty expiration</label><input id="documentWarrantyDate" type="date"></div></div>
     <div class="form-row"><div class="form-group"><label>Store / issuer</label><input id="documentStore" placeholder="Store or organization"></div><div class="form-group"><label>Reminder</label><select id="documentReminder"><option value="">No reminder</option><option value="30">30 days before</option><option value="14">14 days before</option><option value="7">7 days before</option><option value="1">1 day before</option></select></div></div>
+    <div id="subscriptionFields" style="display:none;margin-top:14px;padding:13px;border:1px solid var(--border);border-radius:11px;background:rgba(100,139,255,.04)">
+      <label class="notification-pref" style="margin:0"><span><strong>Recurring subscription</strong><span>Track this service in your subscription spending.</span></span><input id="documentIsSubscription" type="checkbox"></label>
+      <div id="subscriptionAmountField" class="form-group" style="display:none;margin-top:12px"><label for="documentMonthlyAmount">Monthly cost (USD)</label><input id="documentMonthlyAmount" type="number" min="0.01" step="0.01" list="subscriptionAmountSuggestions" placeholder="e.g. 9.99"><datalist id="subscriptionAmountSuggestions"><option value="4.99"><option value="5.99"><option value="9.99"><option value="10.99"><option value="12.99"><option value="14.99"><option value="19.99"><option value="29.99"></datalist><span class="push-state">Enter the monthly amount. The yearly estimate is calculated as 12 × monthly cost.</span></div>
+    </div>
   </div><div class="modal-actions"><button class="secondary-btn" id="cancelDocumentModal">Cancel</button><button class="primary-btn" id="saveDocument">Review & save</button></div></div></div>
   <div class="modal-backdrop" id="subscriptionModal"><div class="modal" style="width:min(500px,100%)"><div class="modal-head"><h2 id="subscriptionModalTitle">Upgrade your plan</h2><button class="icon-btn" id="closeSubscriptionModal"><i data-lucide="x"></i></button></div><div class="modal-body" id="subscriptionModalBody"></div><div class="modal-actions"><button class="secondary-btn" id="subscriptionModalCancel">Maybe later</button><button class="primary-btn" id="subscriptionModalConfirm">Continue</button></div></div></div>
   <div class="modal-backdrop" id="reminderModal"><div class="modal" style="width:min(460px,100%)"><div class="modal-head"><h2>New personal reminder</h2><button class="icon-btn" id="closeReminderModal"><i data-lucide="x"></i></button></div><div class="modal-body"><div class="form-group"><label for="reminderTitle">What should Rememberly remind you about?</label><input id="reminderTitle" maxlength="160" placeholder="e.g. Call the dentist"></div><div class="form-group"><label for="reminderDate">Date</label><input id="reminderDate" type="date"></div><p class="push-state">We'll only surface it near the date. Nothing is sent just because a new day starts.</p></div><div class="modal-actions"><button class="secondary-btn" id="cancelReminder">Cancel</button><button class="primary-btn" id="saveReminder">Save reminder</button></div></div></div>
@@ -478,6 +488,8 @@
     const supabaseClient=window.supabase?.createClient&&appConfig.supabaseUrl&&appConfig.supabaseAnonKey
       ?window.supabase.createClient(appConfig.supabaseUrl,appConfig.supabaseAnonKey):null;
     let subscriptionRecord=null, billingHistory=[];
+    let memoriesLoadedUserId=null, memoriesSyncUserId=null, memoriesSyncPromise=null;
+    let receiptsLoadedUserId=null, receiptsSyncUserId=null, receiptsSyncPromise=null;
     let billingReadiness={billing_ready:false,mode:"unconfigured",missing_configuration:[],checked:false};
     let notificationSettings=null,notificationRows=[],briefingRows=[],briefingEvents=[];
     let notificationChannel=null;
@@ -522,17 +534,21 @@
     ];
     const FEATURE_PLAN={ai_organization:"pro",ai_search:"pro",voice_capture:"pro",document_vault:"pro",receipt_manager:"pro",warranty_tracker:"pro",unlimited_collections:"pro",advanced_reminders:"pro",smart_document_categorization:"pro",daily_briefing:"pro",notification_customization:"premium",weekly_summary:"premium",advanced_ai_assistant:"premium",advanced_ocr:"premium",semantic_search:"premium",subscription_tracker:"premium",travel_organizer:"premium",personal_inventory:"premium",advanced_analytics:"premium"};
     const planForStatus=()=>subscriptionRecord&&["active","trialing"].includes(subscriptionRecord.status)?"proOrPremium": "free";
+    const testerMode=()=>appConfig.testerMode===true;
     function currentPlan(){
+      if(testerMode())return "premium";
       if(planForStatus()!=="proOrPremium"||(subscriptionRecord?.current_period_end&&new Date(subscriptionRecord.current_period_end)<=new Date()))return "free";
       return subscriptionRecord.plan==="premium"?"premium":"pro";
     }
     function hasFeature(user,feature){
+      if(testerMode())return true;
       const required=FEATURE_PLAN[feature];
       if(!required)return true;
       const plan=currentPlan();
       return required==="pro"?["pro","premium"].includes(plan):plan==="premium";
     }
     async function requireFeature(feature){
+      if(testerMode())return true;
       if(!supabaseClient){
         if(hasFeature(currentUser,feature))return true;
         showUpgrade(feature);return false;
@@ -545,6 +561,7 @@
       }catch(error){toast(error instanceof Error?error.message:"Could not verify access to this feature.");return false}
     }
     async function checkUsageAllowance(resourceType,requested){
+      if(testerMode())return true;
       if(!supabaseClient)return true;
       try{
         const {data,error}=await supabaseClient.rpc("validate_usage_limit",{p_resource_type:resourceType,p_requested:requested});
@@ -560,12 +577,203 @@
     }
     function getMemoryCount(){return memories.filter(m=>!m.deleted).length}
     function getStorageUsed(){return documents.reduce((sum,doc)=>sum+(Number(doc.fileSize)||(doc.dataUrl?Math.floor(doc.dataUrl.length*.75):0)),0)}
+    function isUuid(value){return typeof value==="string"&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)}
+    function newMemoryId(){
+      if(crypto.randomUUID)return crypto.randomUUID();
+      const bytes=crypto.getRandomValues(new Uint8Array(16));
+      bytes[6]=(bytes[6]&0x0f)|0x40;bytes[8]=(bytes[8]&0x3f)|0x80;
+      const hex=[...bytes].map(byte=>byte.toString(16).padStart(2,"0")).join("");
+      return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+    }
+    function receiptPendingKey(){return "rememberly_pending_receipts:"+currentUser.email}
+    function receiptFromRow(row,fileUrl=""){
+      return {id:row.id,name:row.name,description:row.description||"",category:"Receipts",tags:row.tags||"",purchaseDate:row.purchase_date||"",expiration:row.expiration||"",warrantyDate:row.warranty_date||"",store:row.store||"",reminder:row.reminder||"",amount:row.amount===null?null:Number(row.amount),isSubscription:Boolean(row.is_subscription),monthlyAmount:row.monthly_amount===null?null:Number(row.monthly_amount),filePath:row.file_path||"",fileName:row.file_name||"",type:row.file_type||"subscription",size:row.file_size?`${Math.max(1,Math.round(row.file_size/1024))} KB`:row.file_path?"File":"Subscription",fileSize:Number(row.file_size)||0,dataUrl:"",fileUrl,createdAt:row.created_at||new Date().toISOString()};
+    }
+    function receiptToRow(receipt,userId){
+      return {id:receipt.id,user_id:userId,name:receipt.name,description:receipt.description||"",tags:receipt.tags||"",purchase_date:receipt.purchaseDate||null,expiration:receipt.expiration||null,warranty_date:receipt.warrantyDate||null,store:receipt.store||"",reminder:receipt.reminder||"",amount:receipt.amount===undefined||receipt.amount===""?null:Number(receipt.amount),is_subscription:Boolean(receipt.isSubscription),monthly_amount:receipt.isSubscription?Number(receipt.monthlyAmount):null,file_path:receipt.filePath||null,file_name:receipt.fileName||null,file_type:receipt.type||null,file_size:Number(receipt.fileSize)||0,created_at:receipt.createdAt||new Date().toISOString(),updated_at:new Date().toISOString()};
+    }
+    async function fileToDataUrl(file){
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(reader.error||new Error(`Could not read ${file.name}`));
+        reader.readAsDataURL(file);
+      });
+    }
+    async function uploadReceiptFile(receipt,blob,fileName,fileType){
+      const safeName=(fileName||"receipt").replace(/[^\w.-]+/g,"_");
+      const path=`${currentUser.id}/${receipt.id}/${safeName}`;
+      const {error}=await supabaseClient.storage.from("receipt-files").upload(path,blob,{upsert:true,contentType:fileType||blob.type||"application/octet-stream"});
+      if(error)throw error;
+      receipt.filePath=path;receipt.fileName=fileName||safeName;receipt.type=fileType||blob.type;receipt.fileSize=blob.size;
+    }
+    async function syncReceiptsFromSupabase(){
+      const userId=currentUser?.id;
+      if(!supabaseClient||!userId)return;
+      if(receiptsLoadedUserId===userId)return;
+      if(receiptsSyncPromise&&receiptsSyncUserId===userId)return receiptsSyncPromise;
+      receiptsSyncUserId=userId;
+      receiptsSyncPromise=(async()=>{
+        const {data:rows,error}=await supabaseClient.from("receipts").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+        if(error)throw error;
+        const local=JSON.parse(localStorage.getItem(documentsKey())||"[]");
+        const localReceipts=local.filter(document=>document.category==="Receipts");
+        const normalized=localReceipts.map(receipt=>({...receipt,id:isUuid(receipt.id)?receipt.id:newMemoryId()}));
+        if(normalized.some((receipt,index)=>receipt.id!==localReceipts[index].id)){
+          const nonReceipts=local.filter(document=>document.category!=="Receipts");
+          localStorage.setItem(documentsKey(),JSON.stringify([...nonReceipts,...normalized]));
+        }
+        const remoteIds=new Set((rows||[]).map(row=>row.id));
+        const pendingIds=new Set(JSON.parse(localStorage.getItem(receiptPendingKey())||"[]"));
+        for(const receipt of normalized.filter(item=>!remoteIds.has(item.id)||pendingIds.has(item.id))){
+          if(receipt.dataUrl&&!receipt.filePath){
+            const response=await fetch(receipt.dataUrl);
+            if(!response.ok)throw new Error(`Could not prepare receipt file ${receipt.name}`);
+            await uploadReceiptFile(receipt,await response.blob(),receipt.fileName||receipt.name,receipt.type);
+          }
+          const {error:saveError}=await supabaseClient.from("receipts").upsert(receiptToRow(receipt,userId),{onConflict:"id"});
+          if(saveError)throw saveError;
+          pendingIds.delete(receipt.id);
+        }
+        localStorage.setItem(receiptPendingKey(),JSON.stringify([...pendingIds]));
+        const {data:allRows,error:refreshError}=await supabaseClient.from("receipts").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+        if(refreshError)throw refreshError;
+        const remoteReceipts=await Promise.all((allRows||[]).map(async row=>{
+          let fileUrl="";
+          if(row.file_path){
+            const {data,error:signedUrlError}=await supabaseClient.storage.from("receipt-files").createSignedUrl(row.file_path,3600);
+            if(signedUrlError)throw signedUrlError;
+            fileUrl=data.signedUrl;
+          }
+          return receiptFromRow(row,fileUrl);
+        }));
+        const currentNonReceipts=documents.filter(document=>document.category!=="Receipts");
+        documents=[...remoteReceipts,...currentNonReceipts];
+        saveDocuments();
+        receiptsLoadedUserId=userId;
+      })();
+      try{return await receiptsSyncPromise}
+      finally{if(receiptsSyncUserId===userId){receiptsSyncUserId=null;receiptsSyncPromise=null}}
+    }
+    async function persistReceipt(receipt,file=null){
+      if(!supabaseClient||!currentUser?.id)return false;
+      const pendingIds=new Set(JSON.parse(localStorage.getItem(receiptPendingKey())||"[]"));
+      pendingIds.add(receipt.id);
+      try{localStorage.setItem(receiptPendingKey(),JSON.stringify([...pendingIds]))}
+      catch(error){toast(`Receipt sync retry data could not be cached locally: ${error.message}`)}
+      let oldFilePath=receipt.filePath||"";
+      if(file)await uploadReceiptFile(receipt,file, file.name,file.type);
+      else if(receipt.dataUrl&&!receipt.filePath){
+        const response=await fetch(receipt.dataUrl);
+        if(!response.ok)throw new Error(`Could not prepare receipt file ${receipt.name}`);
+        const blob=await response.blob();
+        await uploadReceiptFile(receipt,blob,receipt.fileName||receipt.name,receipt.type);
+      }
+      const {error}=await supabaseClient.from("receipts").upsert(receiptToRow(receipt,currentUser.id),{onConflict:"id"});
+      if(error)throw error;
+      if(file&&oldFilePath&&oldFilePath!==receipt.filePath){
+        const {error:removeError}=await supabaseClient.storage.from("receipt-files").remove([oldFilePath]);
+        if(removeError)toast(`Receipt saved, but old file cleanup failed: ${removeError.message}`);
+      }
+      receipt.dataUrl="";
+      pendingIds.delete(receipt.id);
+      try{localStorage.setItem(receiptPendingKey(),JSON.stringify([...pendingIds]));saveDocuments()}
+      catch(error){toast(`Receipt is saved to Supabase, but its local cache could not be updated: ${error.message}`)}
+      if(receipt.filePath){
+        const {data,error:signedUrlError}=await supabaseClient.storage.from("receipt-files").createSignedUrl(receipt.filePath,3600);
+        if(signedUrlError)toast(`Receipt saved to Supabase, but its file preview could not be loaded: ${signedUrlError.message}`);
+        else receipt.fileUrl=data.signedUrl;
+      }
+      try{saveDocuments()}
+      catch(error){toast(`Receipt is saved to Supabase, but its local cache could not be updated: ${error.message}`)}
+      return true;
+    }
+    async function deleteReceiptFromSupabase(receipt){
+      if(!supabaseClient||!currentUser?.id)return;
+      const {data,error}=await supabaseClient.from("receipts").delete().eq("id",receipt.id).eq("user_id",currentUser.id).select("id").maybeSingle();
+      if(error)throw error;
+      if(!data)throw new Error("Receipt was not found in your Supabase account.");
+      if(receipt.filePath){
+        const {error:removeError}=await supabaseClient.storage.from("receipt-files").remove([receipt.filePath]);
+        if(removeError)toast(`Receipt deleted, but its stored file could not be removed: ${removeError.message}`);
+      }
+    }
+    function memoryFromRow(row){
+      return {id:row.id,title:row.title,content:row.content||"",category:row.category||"Personal",tags:Array.isArray(row.tags)?row.tags:[],type:row.type||"text",summary:row.summary||row.content||row.title,favorite:Boolean(row.favorite),deleted:Boolean(row.deleted),created:row.created_at||new Date().toISOString(),updated:row.updated_at||row.created_at||new Date().toISOString()};
+    }
+    function memoryToRow(memory,userId){
+      const created=memory.created||new Date().toISOString();
+      return {id:memory.id,user_id:userId,title:memory.title,content:memory.content||"",category:memory.category||"Personal",tags:memory.tags||[],type:memory.type||"text",summary:memory.summary||"",favorite:Boolean(memory.favorite),deleted:Boolean(memory.deleted),created_at:created.includes("T")?created:new Date(`${created}T12:00:00`).toISOString(),updated_at:memory.updated||new Date().toISOString()};
+    }
+    async function syncMemoriesFromSupabase(){
+      const userId=currentUser?.id;
+      if(!supabaseClient||!userId)return;
+      if(memoriesLoadedUserId===userId)return;
+      if(memoriesSyncPromise&&memoriesSyncUserId===userId)return memoriesSyncPromise;
+      memoriesSyncUserId=userId;
+      memoriesSyncPromise=(async()=>{
+        const {data:rows,error}=await supabaseClient.from("memories").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+        if(error)throw error;
+        const local=JSON.parse(localStorage.getItem(memoriesKey())||"[]");
+        const normalizedLocal=local.map(memory=>({...memory,id:isUuid(memory.id)?memory.id:newMemoryId()}));
+        if(normalizedLocal.some((memory,index)=>memory.id!==local[index].id))localStorage.setItem(memoriesKey(),JSON.stringify(normalizedLocal));
+        const remoteIds=new Set((rows||[]).map(row=>row.id));
+        const pendingIds=new Set(JSON.parse(localStorage.getItem(pendingMemoriesKey())||"[]"));
+        const rowsToUpload=normalizedLocal.filter(memory=>!remoteIds.has(memory.id)||pendingIds.has(memory.id));
+        if(rowsToUpload.length){
+          const {error:insertError}=await supabaseClient.from("memories").upsert(rowsToUpload.map(memory=>memoryToRow(memory,userId)),{onConflict:"id"});
+          if(insertError)throw insertError;
+          const uploadedIds=new Set(rowsToUpload.map(memory=>memory.id));
+          localStorage.setItem(pendingMemoriesKey(),JSON.stringify([...pendingIds].filter(id=>!uploadedIds.has(id))));
+        }
+        const {data:allRows,error:refreshError}=await supabaseClient.from("memories").select("*").eq("user_id",userId).order("created_at",{ascending:false});
+        if(refreshError)throw refreshError;
+        memories=(allRows||[]).map(memoryFromRow);
+        localStorage.setItem(memoriesKey(),JSON.stringify(memories));
+        memoriesLoadedUserId=userId;
+      })();
+      try{return await memoriesSyncPromise}
+      finally{if(memoriesSyncUserId===userId){memoriesSyncUserId=null;memoriesSyncPromise=null}}
+    }
+    async function persistMemory(memory){
+      save();
+      if(!supabaseClient||!currentUser?.id)return true;
+      const pendingIds=new Set(JSON.parse(localStorage.getItem(pendingMemoriesKey())||"[]"));
+      pendingIds.add(memory.id);
+      localStorage.setItem(pendingMemoriesKey(),JSON.stringify([...pendingIds]));
+      const rowsToUpload=memories.filter(item=>pendingIds.has(item.id)).map(item=>memoryToRow(item,currentUser.id));
+      const {error}=await supabaseClient.from("memories").upsert(rowsToUpload,{onConflict:"id"});
+      if(error){toast(`Memory is only saved on this device; Supabase sync failed: ${error.message}`);return false}
+      const uploadedIds=new Set(rowsToUpload.map(row=>row.id));
+      localStorage.setItem(pendingMemoriesKey(),JSON.stringify([...pendingIds].filter(id=>!uploadedIds.has(id))));
+      localStorage.setItem(memoriesKey(),JSON.stringify(memories));
+      return true;
+    }
+    async function deleteMemoryPermanently(memoryId){
+      const memory=memories.find(item=>String(item.id)===String(memoryId));
+      if(!memory||!confirm(`Permanently delete "${memory.title}"? This cannot be undone.`))return false;
+      if(supabaseClient&&currentUser?.id){
+        const {data,error}=await supabaseClient.from("memories").delete().eq("id",memory.id).eq("user_id",currentUser.id).select("id").maybeSingle();
+        if(error){toast(`Could not delete memory from Supabase: ${error.message}`);return false}
+        if(!data){toast("Memory was not found in your Supabase account.");return false}
+      }
+      memories=memories.filter(item=>String(item.id)!==String(memoryId));
+      save();
+      const pendingIds=new Set(JSON.parse(localStorage.getItem(pendingMemoriesKey())||"[]"));
+      pendingIds.delete(String(memoryId));
+      localStorage.setItem(pendingMemoriesKey(),JSON.stringify([...pendingIds]));
+      closeModal();
+      render();
+      toast("Memory permanently deleted");
+      return true;
+    }
     function icon(name){ return `<i data-lucide="${name}"></i>` }
     function refreshIcons(){ if(window.lucide) lucide.createIcons(); }
     function memoriesKey(){ return "rememberly_memories:"+currentUser.email; }
+    function pendingMemoriesKey(){ return "rememberly_pending_memories:"+currentUser.email; }
     function save(){ if(currentUser) localStorage.setItem(memoriesKey(),JSON.stringify(memories)); }
     function documentsKey(){ return "rememberly_documents:"+currentUser.email; }
-    function saveDocuments(){ if(currentUser) localStorage.setItem(documentsKey(),JSON.stringify(documents)); }
+    function saveDocuments(){ if(currentUser) localStorage.setItem(documentsKey(),JSON.stringify(documents.map(({fileUrl,...document})=>document))); }
     function esc(s){ return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
     function formatDate(d){ if(!d)return "No date"; const date=d.includes("T")?new Date(d):new Date(d+"T12:00:00"); return isNaN(date)? "No date":date.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
     function previewBanner(){
@@ -1049,7 +1257,7 @@
       refreshIcons();
     }
     function typeIcon(t){ return t==="link"?"link":t==="image"?"image":t==="voice"?"mic":"notebook-text"; }
-    function card(m){ return `<article class="memory-card" data-id="${m.id}"><div class="memory-card-head"><span class="memory-kind"><i>${icon(typeIcon(m.type))}</i>${m.type==="note"?"Note":m.type[0].toUpperCase()+m.type.slice(1)}</span><button class="favorite ${m.favorite?"active":""}" data-favorite="${m.id}" title="Favorite">${icon("star")}</button></div><h3>${esc(m.title)}</h3><p>${esc(m.summary||m.content||"")}</p><div class="memory-meta"><span class="badge">${esc(m.category)}</span><span class="memory-date">${formatDate(m.created)}</span></div></article>` }
+    function card(m){ return `<article class="memory-card" data-id="${m.id}"><div class="memory-card-head"><span class="memory-kind"><i>${icon(typeIcon(m.type))}</i>${m.type==="note"?"Note":m.type[0].toUpperCase()+m.type.slice(1)}</span><div class="memory-card-actions"><button class="favorite ${m.favorite?"active":""}" data-favorite="${m.id}" title="Favorite">${icon("star")}</button><button class="memory-delete" data-memory-delete="${m.id}" title="Delete permanently">${icon("trash-2")}</button></div></div><h3>${esc(m.title)}</h3><p>${esc(m.summary||m.content||"")}</p><div class="memory-meta"><span class="badge">${esc(m.category)}</span><span class="memory-date">${formatDate(m.created)}</span></div></article>` }
     function render(){
       const active=memories.filter(m=>!m.deleted);
       const activeWarranties=documents.filter(d=>d.category==="Warranties"&&documentStatus(d)==="active").length;
@@ -1088,6 +1296,7 @@
     async function openModal(type="text",memory=null){
       if(!await setCapture(type,Boolean(memory)))return;
       editingId=memory?.id||null; $("#modalTitle").textContent=memory?"Edit memory":"New memory";
+      $("#deleteMemory").style.display=memory?"inline-block":"none";
       $("#memoryTitle").value=memory?.title||""; $("#memoryContent").value=memory?.content||""; $("#memoryCategory").value=memory?.category||"Personal"; $("#memoryTags").value=memory?.tags?.join(", ")||"";
       $("#memoryModal").classList.add("open"); setTimeout(()=>$("#memoryTitle").focus(),100);
     }
@@ -1109,12 +1318,16 @@
     ["newMemory","mobileNew","addMemoryPage"].forEach(id=>$("#"+id)?.addEventListener("click",()=>openModal()));
     $("#closeModal").onclick=$("#cancelModal").onclick=closeModal;
     $("#memoryModal").addEventListener("click",e=>{if(e.target.id==="memoryModal")closeModal()});
+    $("#deleteMemory").onclick=()=>{if(editingId)deleteMemoryPermanently(editingId)};
     $$(".capture-tab").forEach(t=>t.addEventListener("click",()=>setCapture(t.dataset.type)));
     $$(".quick").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.capture)));
     $("#saveMemory").onclick=async()=>{
+      if(supabaseClient&&currentUser?.id){
+        try{await syncMemoriesFromSupabase()}
+        catch(error){toast(`Could not connect to Supabase; memory was not saved: ${error.message}`);return}
+      }
       const isEditing=Boolean(editingId);
       if(!isEditing&&getMemoryCount()>=PLAN_DETAILS[currentPlan()].memoryLimit){showUpgrade("memory_limit");return}
-      if(!isEditing&&!await checkUsageAllowance("memories",1))return;
       const fileName=$("#fileStatus").dataset.name;
       const voiceText=$("#voiceStatus").dataset.transcript;
       const title=captureType==="link"?($("#linkTitle").value||$("#linkUrl").value):
@@ -1126,14 +1339,19 @@
         $("#memoryContent").value.trim();
       if(!title||(!content&&captureType==="text")){toast("Add a title and content before saving");return}
       const category=$("#memoryCategory").value;
-      if(editingId){const m=memories.find(x=>x.id===editingId); Object.assign(m,{title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,updated:new Date().toISOString()});}
-      else memories.unshift({id:Date.now(),title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,summary:captureType==="text"?content.slice(0,110):title,favorite:false,deleted:false,created:new Date().toISOString().slice(0,10)});
-      save(); closeModal(); render(); toast(isEditing?"Memory updated":"Memory saved");
+      let memory;
+      if(editingId){memory=memories.find(x=>String(x.id)===String(editingId));Object.assign(memory,{title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,updated:new Date().toISOString()});}
+      else{memory={id:supabaseClient&&currentUser?.id?newMemoryId():Date.now(),title,content,category,tags:$("#memoryTags").value.split(",").map(t=>t.trim()).filter(Boolean),type:captureType,summary:captureType==="text"?content.slice(0,110):title,favorite:false,deleted:false,created:new Date().toISOString()};memories.unshift(memory);}
+      const synced=await persistMemory(memory);
+      closeModal();render();
+      if(synced)toast(isEditing?"Memory updated":"Memory saved");
     };
     document.addEventListener("click",e=>{
-      const fav=e.target.closest("[data-favorite]"); if(fav){e.stopPropagation();const m=memories.find(x=>x.id===Number(fav.dataset.favorite));m.favorite=!m.favorite;save();render();toast(m.favorite?"Added to favorites":"Removed from favorites");return}
-      const card=e.target.closest(".memory-card"); if(card&&!e.target.closest("button")){const m=memories.find(x=>x.id===Number(card.dataset.id)); openModal(m.type,m)}
-      const res=e.target.closest(".search-result"); if(res){$("#searchOverlay").classList.remove("open");openPage("memories");const m=memories.find(x=>x.id===Number(res.dataset.id));openModal(m.type,m)}
+      const deleteButton=e.target.closest("[data-memory-delete]");
+      if(deleteButton){e.stopPropagation();deleteMemoryPermanently(deleteButton.dataset.memoryDelete);return}
+      const fav=e.target.closest("[data-favorite]"); if(fav){e.stopPropagation();const m=memories.find(x=>String(x.id)===fav.dataset.favorite);if(!m)return;m.favorite=!m.favorite;m.updated=new Date().toISOString();persistMemory(m).then(synced=>{render();if(synced)toast(m.favorite?"Added to favorites":"Removed from favorites")});return}
+      const card=e.target.closest(".memory-card"); if(card&&!e.target.closest("button")){const m=memories.find(x=>String(x.id)===card.dataset.id);if(m)openModal(m.type,m)}
+      const res=e.target.closest(".search-result"); if(res){$("#searchOverlay").classList.remove("open");openPage("memories");const m=memories.find(x=>String(x.id)===res.dataset.id);if(m)openModal(m.type,m)}
     });
     $("#memorySearch").oninput=renderLibrary; $("#categoryFilter").onchange=renderLibrary;
     $("#viewToggle").onclick=()=>{viewList=!viewList;renderLibrary();$("#viewToggle").innerHTML=icon(viewList?"list":"layout-grid");refreshIcons()};
@@ -1251,6 +1469,8 @@
       documents=JSON.parse(localStorage.getItem(documentsKey())||"[]");
       renderSubscription();
       render();
+      if(supabaseClient&&currentUser.id)syncMemoriesFromSupabase().then(render).catch(error=>toast(`Could not load memories from Supabase: ${error.message}`));
+      if(supabaseClient&&currentUser.id)syncReceiptsFromSupabase().then(()=>{renderVault();renderWarranties();renderReceipts();renderExpiration();render()}).catch(error=>toast(`Could not load receipts from Supabase: ${error.message}`));
       refreshBriefing();
       loadSubscription().catch(error=>toast(error.message||"Could not load subscription details."));
       loadBillingReadiness();
@@ -1283,7 +1503,7 @@
             :"Sign-in did not create an active session. Check your credentials and Supabase Auth settings.";
           return;
         }
-        currentUser={email:result.data.user.email,name:result.data.user.user_metadata?.full_name||name||email.split("@")[0]};
+        currentUser={id:result.data.user.id,email:result.data.user.email,name:result.data.user.user_metadata?.full_name||name||email.split("@")[0]};
         $("#authName").value="";$("#authPassword").value="";
         applyUser();
         return;
@@ -1312,10 +1532,10 @@
     if(supabaseClient){
       supabaseClient.auth.onAuthStateChange((_event,session)=>{
         if(session?.user){
-          currentUser={email:session.user.email,name:session.user.user_metadata?.full_name||session.user.email.split("@")[0]};
+          currentUser={id:session.user.id,email:session.user.email,name:session.user.user_metadata?.full_name||session.user.email.split("@")[0]};
           applyUser();
         }else if(currentUser){
-          currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];
+          currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];memoriesLoadedUserId=null;memoriesSyncUserId=null;memoriesSyncPromise=null;receiptsLoadedUserId=null;receiptsSyncUserId=null;receiptsSyncPromise=null;
           $("#app").classList.remove("authenticated");$("#authScreen").style.display="grid";
         }
       });
@@ -1323,7 +1543,7 @@
         if(error){$("#authError").textContent=error.message;return}
         if(data.session?.user){
           const user=data.session.user;
-          currentUser={email:user.email,name:user.user_metadata?.full_name||user.email.split("@")[0]};
+          currentUser={id:user.id,email:user.email,name:user.user_metadata?.full_name||user.email.split("@")[0]};
           applyUser();
         }
       }).catch(error=>{$("#authError").textContent=error.message||"Could not restore your session."});
@@ -1338,10 +1558,14 @@
     }
     function documentCard(doc){
       const status=documentStatus(doc);
-      const thumb=doc.dataUrl&&doc.type?.startsWith("image/")?`<img src="${doc.dataUrl}" alt="">`:`${icon(doc.category==="Warranties"?"badge-check":doc.category==="Receipts"?"receipt-text":"file-text")}`;
+      const fileUrl=doc.dataUrl||doc.fileUrl||"";
+      const thumb=fileUrl&&doc.type?.startsWith("image/")?`<img src="${fileUrl}" alt="">`:`${icon(doc.category==="Warranties"?"badge-check":doc.category==="Receipts"?"receipt-text":"file-text")}`;
       const badge=status?`<span class="status-pill status-${status}">${status==="soon"?"Expiring soon":status[0].toUpperCase()+status.slice(1)}</span>`:"";
-      return `<article class="document-card" data-document-id="${doc.id}"><div class="document-thumb">${thumb}</div><h3>${esc(doc.name)}</h3><p>${esc(doc.category)} · ${esc(doc.size||"")}</p>${badge}<div class="document-actions"><button data-doc-preview="${doc.id}" title="Preview">${icon("eye")}</button><button data-doc-download="${doc.id}" title="Download">${icon("download")}</button><button data-doc-delete="${doc.id}" title="Delete">${icon("trash-2")}</button></div></article>`;
+      const subscriptionCost=doc.isSubscription&&Number(doc.monthlyAmount)>0?`<span class="document-subscription-cost">${formatUsd(doc.monthlyAmount)} / month · ${formatUsd(Number(doc.monthlyAmount)*12)} / year</span>`:"";
+      const fileActions=fileUrl?`<button data-doc-preview="${doc.id}" title="Preview">${icon("eye")}</button><button data-doc-download="${doc.id}" title="Download">${icon("download")}</button>`:"";
+      return `<article class="document-card" data-document-id="${esc(doc.id)}"><div class="document-thumb">${thumb}</div><h3>${esc(doc.name)}</h3><p>${esc(doc.category)} · ${esc(doc.size||(doc.isSubscription?"Subscription":""))}</p>${subscriptionCost}${badge}<div class="document-actions"><button data-doc-edit="${esc(doc.id)}" title="Edit">${icon("pencil")}</button>${fileActions}<button data-doc-delete="${esc(doc.id)}" title="Delete">${icon("trash-2")}</button></div></article>`;
     }
+    function formatUsd(amount){return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(amount)||0)}
     function renderVault(){
       const categories=[
         ["Personal Documents","contact"],["Financial Documents","landmark"],["Receipts","receipt-text"],["Warranties","badge-check"],
@@ -1367,8 +1591,9 @@
         const now=new Date();
         list=list.filter(d=>{const date=new Date(d.purchaseDate||d.createdAt);return period==="month"?date.getMonth()===now.getMonth()&&date.getFullYear()===now.getFullYear():date.getFullYear()===now.getFullYear();});
       }
-      const total=list.reduce((sum,d)=>sum+(Number(d.amount)||0),0);
-      $("#receiptMetrics").innerHTML=`<div class="stat"><div class="stat-label">Recorded purchases</div><div class="stat-value">${list.length}</div></div><div class="stat"><div class="stat-label">Recorded total</div><div class="stat-value">${total ? total.toFixed(2):"0.00"}</div></div><div class="stat"><div class="stat-label">Monthly period</div><div class="stat-value">${period==="month"?"Yes":"—"}</div></div><div class="stat"><div class="stat-label">Yearly period</div><div class="stat-value">${period==="year"?"Yes":"—"}</div></div>`;
+      const subscriptions=documents.filter(d=>d.category==="Receipts"&&d.isSubscription&&Number(d.monthlyAmount)>0);
+      const monthlySpend=subscriptions.reduce((sum,d)=>sum+Number(d.monthlyAmount),0);
+      $("#receiptMetrics").innerHTML=`<div class="stat"><div class="stat-label">Subscriptions</div><div class="stat-value">${subscriptions.length}</div></div><div class="stat"><div class="stat-label">Monthly subscription spend</div><div class="stat-value">${formatUsd(monthlySpend)}</div></div><div class="stat"><div class="stat-label">Estimated yearly spend</div><div class="stat-value">${formatUsd(monthlySpend*12)}</div></div><div class="stat"><div class="stat-label">Average monthly cost</div><div class="stat-value">${formatUsd(subscriptions.length?monthlySpend/subscriptions.length:0)}</div></div>`;
       $("#receiptGrid").innerHTML=list.length?list.map(documentCard).join(""):`<div class="empty-page" style="grid-column:1/-1"><div><i data-lucide="receipt-text"></i><h2>No receipts found</h2><p>Receipts you save will be summarized here.</p></div></div>`;
       refreshIcons();
     }
@@ -1382,13 +1607,22 @@
     }
     function openDocumentModal(doc=null){
       if(!doc&&currentPlan()==="free"&&documents.length>=PLAN_DETAILS.free.documentLimit){showUpgrade("document_vault");return}
-      if(!doc&&currentPlan()!=="free"&&PLAN_DETAILS[currentPlan()].storageLimit&&getStorageUsed()>=PLAN_DETAILS[currentPlan()].storageLimit){showUpgrade("document_vault");return}
+      if(!testerMode()&&!doc&&currentPlan()!=="free"&&PLAN_DETAILS[currentPlan()].storageLimit&&getStorageUsed()>=PLAN_DETAILS[currentPlan()].storageLimit){showUpgrade("document_vault");return}
       editingDocumentId=doc?.id||null;pendingDocumentFiles=[];
       $("#documentModalTitle").textContent=doc?"Edit document":"Upload document";
       $("#documentName").value=doc?.name||"";$("#documentDescription").value=doc?.description||"";$("#documentCategory").value=doc?.category||"Personal Documents";
       $("#documentCustomCategory").value="";
       $("#documentTags").value=doc?.tags||"";$("#documentExpiration").value=doc?.expiration||"";$("#documentPurchaseDate").value=doc?.purchaseDate||"";$("#documentWarrantyDate").value=doc?.warrantyDate||"";$("#documentStore").value=doc?.store||"";$("#documentReminder").value=doc?.reminder||"";
+      $("#documentIsSubscription").checked=Boolean(doc?.isSubscription);
+      $("#documentMonthlyAmount").value=doc?.monthlyAmount||"";
+      updateSubscriptionFields();
       $("#documentProgressBar").style.width="0%";$("#documentModal").classList.add("open");
+    }
+    function updateSubscriptionFields(){
+      const isReceipt=$("#documentCategory").value==="Receipts";
+      $("#subscriptionFields").style.display=isReceipt?"block":"none";
+      $("#subscriptionAmountField").style.display=isReceipt&&$("#documentIsSubscription").checked?"block":"none";
+      if(!isReceipt)$("#documentIsSubscription").checked=false;
     }
     function closeDocumentModal(){ $("#documentModal").classList.remove("open");editingDocumentId=null;pendingDocumentFiles=[]; }
     function processDocumentFiles(files){
@@ -1403,7 +1637,7 @@
         pendingDocumentFiles=pendingDocumentFiles.slice(0,Math.max(0,plan.documentLimit-documents.length));
         showUpgrade("document_vault");
       }
-      if(plan.storageLimit&&getStorageUsed()+pendingDocumentFiles.reduce((sum,file)=>sum+file.size,0)>plan.storageLimit){
+      if(!testerMode()&&plan.storageLimit&&getStorageUsed()+pendingDocumentFiles.reduce((sum,file)=>sum+file.size,0)>plan.storageLimit){
         pendingDocumentFiles=[];
         showUpgrade("document_vault");
       }
@@ -1414,7 +1648,9 @@
     }
     $("#uploadDocument").onclick=()=>openDocumentModal();
     $("#addWarranty").onclick=()=>{openDocumentModal();$("#documentCategory").value="Warranties";};
-    $("#addReceipt").onclick=()=>{openDocumentModal();$("#documentCategory").value="Receipts";};
+    $("#addReceipt").onclick=()=>{openDocumentModal();$("#documentCategory").value="Receipts";updateSubscriptionFields();};
+    $("#documentCategory").onchange=updateSubscriptionFields;
+    $("#documentIsSubscription").onchange=updateSubscriptionFields;
     $("#addExpiration").onclick=()=>openDocumentModal();
     $("#closeDocumentModal").onclick=$("#cancelDocumentModal").onclick=closeDocumentModal;
     $("#documentModal").addEventListener("click",e=>{if(e.target.id==="documentModal")closeDocumentModal();});
@@ -1423,13 +1659,55 @@
     $("#documentDrop").addEventListener("dragleave",e=>{e.currentTarget.style.borderColor="rgba(100,139,255,.32)";});
     $("#documentDrop").addEventListener("drop",e=>{e.preventDefault();e.currentTarget.style.borderColor="rgba(100,139,255,.32)";processDocumentFiles(e.dataTransfer.files);});
     $("#saveDocument").onclick=async()=>{
-      if(!editingDocumentId&&!pendingDocumentFiles.length){toast("Select one or more documents first");return;}
-      if(!editingDocumentId&&!await checkUsageAllowance("documents",pendingDocumentFiles.length))return;
+      const isSubscription=$("#documentCategory").value==="Receipts"&&$("#documentIsSubscription").checked;
+      if(!editingDocumentId&&!pendingDocumentFiles.length&&!isSubscription){toast("Select one or more documents first");return;}
+      if(!editingDocumentId&&pendingDocumentFiles.length&&!await checkUsageAllowance("documents",pendingDocumentFiles.length))return;
       const requestedStorage=pendingDocumentFiles.reduce((sum,file)=>sum+file.size,0);
       if(!editingDocumentId&&requestedStorage&&!await checkUsageAllowance("document_storage_bytes",requestedStorage))return;
-      const base={name:$("#documentName").value.trim(),description:$("#documentDescription").value.trim(),category:$("#documentCustomCategory").value.trim()||$("#documentCategory").value,tags:$("#documentTags").value.trim(),expiration:$("#documentExpiration").value,purchaseDate:$("#documentPurchaseDate").value,warrantyDate:$("#documentWarrantyDate").value,store:$("#documentStore").value.trim(),reminder:$("#documentReminder").value};
+      const base={name:$("#documentName").value.trim(),description:$("#documentDescription").value.trim(),category:isSubscription?"Receipts":$("#documentCustomCategory").value.trim()||$("#documentCategory").value,tags:$("#documentTags").value.trim(),expiration:$("#documentExpiration").value,purchaseDate:$("#documentPurchaseDate").value,warrantyDate:$("#documentWarrantyDate").value,store:$("#documentStore").value.trim(),reminder:$("#documentReminder").value,isSubscription,monthlyAmount:isSubscription?Number($("#documentMonthlyAmount").value):null};
       if(!base.name){toast("Enter a document name");return;}
+      if(base.isSubscription&&(!Number.isFinite(base.monthlyAmount)||base.monthlyAmount<=0)){toast("Enter a valid monthly subscription amount in USD");return;}
+      if(supabaseClient&&currentUser?.id&&base.category==="Receipts"){
+        try{
+          await syncReceiptsFromSupabase();
+          const files=[...pendingDocumentFiles];
+          if(!editingDocumentId&&files.length>1){toast("Add one receipt at a time so each file is linked to its own record.");return;}
+          if(editingDocumentId){
+            const receipt=documents.find(document=>String(document.id)===String(editingDocumentId));
+            if(!receipt)throw new Error("Receipt was not found.");
+            Object.assign(receipt,base);
+            if(files[0]){
+              receipt.dataUrl=await fileToDataUrl(files[0]);
+              receipt.type=files[0].type;
+              receipt.fileName=files[0].name;
+              receipt.fileSize=files[0].size;
+              receipt.size=files[0].size<1048576?`${Math.max(1,Math.round(files[0].size/1024))} KB`:`${(files[0].size/1048576).toFixed(1)} MB`;
+            }
+            try{saveDocuments()}catch(error){toast(`Receipt will continue syncing to Supabase, but its local cache could not be updated: ${error.message}`)}
+            await persistReceipt(receipt,files[0]||null);
+          }else{
+            const file=files[0]||null;
+            const receipt={id:newMemoryId(),...base,type:file?.type||"subscription",size:file?file.size<1048576?`${Math.max(1,Math.round(file.size/1024))} KB`:`${(file.size/1048576).toFixed(1)} MB`:"Subscription",fileSize:file?.size||0,dataUrl:file?await fileToDataUrl(file):"",extractedText:"",createdAt:new Date().toISOString()};
+            editingDocumentId=receipt.id;
+            documents.unshift(receipt);
+            try{saveDocuments()}catch(error){toast(`Receipt will continue syncing to Supabase, but its local cache could not be updated: ${error.message}`)}
+            await persistReceipt(receipt,file);
+          }
+          closeDocumentModal();renderVault();renderWarranties();renderReceipts();renderExpiration();render();refreshBriefing();
+          toast("Receipt saved to Supabase");
+        }catch(error){
+          renderVault();renderWarranties();renderReceipts();renderExpiration();render();
+          toast(`Could not sync this receipt to Supabase: ${error.message}. Retry saving while the receipt is still selected.`);
+        }
+        return;
+      }
       if(editingDocumentId){const doc=documents.find(d=>d.id===editingDocumentId);Object.assign(doc,base);closeDocumentModal();saveDocuments();renderVault();renderWarranties();renderReceipts();renderExpiration();render();refreshBriefing();toast("Document updated");return;}
+      if(!pendingDocumentFiles.length&&base.isSubscription){
+        const doc={id:Date.now(),...base,type:"subscription",size:"Subscription",fileSize:0,dataUrl:"",extractedText:"",createdAt:new Date().toISOString()};
+        documents.unshift(doc);
+        try{saveDocuments()}catch(error){documents.shift();toast("Could not save subscription in local browser storage");return;}
+        closeDocumentModal();renderVault();renderWarranties();renderReceipts();renderExpiration();render();toast("Subscription saved");return;
+      }
       pendingDocumentFiles.forEach((file,index)=>{
         const reader=new FileReader();
         reader.onload=()=>{
@@ -1446,13 +1724,14 @@
     $("#documentSearch").oninput=renderVault;$("#documentCategoryFilter").onchange=renderVault;
     $("#receiptSearch").oninput=renderReceipts;$("#receiptPeriod").onchange=renderReceipts;
     $("#warrantyFilter").onchange=renderWarranties;
-    document.addEventListener("click",e=>{
+    document.addEventListener("click",async e=>{
       const docSearch=e.target.closest("[data-document-search]");
-      if(docSearch){$("#searchOverlay").classList.remove("open");openPage("vault");const doc=documents.find(d=>d.id===Number(docSearch.dataset.documentSearch));if(doc)openDocumentModal(doc);return;}
+      if(docSearch){$("#searchOverlay").classList.remove("open");openPage("vault");const doc=documents.find(d=>String(d.id)===docSearch.dataset.documentSearch);if(doc)openDocumentModal(doc);return;}
       const cat=e.target.closest("[data-vault-category]");if(cat){$("#documentCategoryFilter").value=cat.dataset.vaultCategory;renderVault();}
-      const preview=e.target.closest("[data-doc-preview]");if(preview){const doc=documents.find(d=>d.id===Number(preview.dataset.docPreview));if(doc?.dataUrl)window.open(doc.dataUrl,"_blank");else toast("Preview is not available for this document");}
-      const download=e.target.closest("[data-doc-download]");if(download){const doc=documents.find(d=>d.id===Number(download.dataset.docDownload));if(!doc?.dataUrl){toast("This document has no downloadable file");return;}const a=document.createElement("a");a.href=doc.dataUrl;a.download=doc.name||"document";a.click();}
-      const del=e.target.closest("[data-doc-delete]");if(del){const id=Number(del.dataset.docDelete);if(confirm("Delete this document and its stored metadata?")){documents=documents.filter(d=>d.id!==id);saveDocuments();removeSyncedDocumentEvents(id).then(refreshBriefing);renderVault();renderWarranties();renderReceipts();renderExpiration();render();toast("Document deleted");}}
+      const preview=e.target.closest("[data-doc-preview]");if(preview){const doc=documents.find(d=>String(d.id)===preview.dataset.docPreview);const url=doc?.dataUrl||doc?.fileUrl;if(url)window.open(url,"_blank");else toast("Preview is not available for this document");}
+      const download=e.target.closest("[data-doc-download]");if(download){const doc=documents.find(d=>String(d.id)===download.dataset.docDownload),url=doc?.dataUrl||doc?.fileUrl;if(!url){toast("This document has no downloadable file");return;}const a=document.createElement("a");a.href=url;a.download=doc.fileName||doc.name||"document";a.target="_blank";a.rel="noopener";a.click();}
+      const edit=e.target.closest("[data-doc-edit]");if(edit){const doc=documents.find(d=>String(d.id)===edit.dataset.docEdit);if(doc)openDocumentModal(doc);}
+      const del=e.target.closest("[data-doc-delete]");if(del){const doc=documents.find(d=>String(d.id)===del.dataset.docDelete);if(doc&&confirm("Delete this document and its stored metadata?")){try{if(doc.category==="Receipts"&&supabaseClient&&currentUser?.id)await deleteReceiptFromSupabase(doc);documents=documents.filter(d=>String(d.id)!==String(doc.id));saveDocuments();removeSyncedDocumentEvents(doc.id).then(refreshBriefing);renderVault();renderWarranties();renderReceipts();renderExpiration();render();toast("Document deleted");}catch(error){toast(`Could not delete receipt: ${error.message}`)}}}
     });
     $("#logoutBtn").onclick=async()=>{
       if(supabaseClient){
@@ -1460,7 +1739,7 @@
         if(error){toast(error.message||"Could not sign out.");return}
       }
       localStorage.removeItem("rememberly_session");
-      currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];
+      currentUser=null;memories=[];documents=[];subscriptionRecord=null;billingHistory=[];memoriesLoadedUserId=null;memoriesSyncUserId=null;memoriesSyncPromise=null;receiptsLoadedUserId=null;receiptsSyncUserId=null;receiptsSyncPromise=null;
       $("#app").classList.remove("authenticated");
       $("#authScreen").style.display="grid";
       $("#authEmail").value="";$("#authPassword").value="";
@@ -1473,6 +1752,5 @@
       if(account){currentUser={email:account.email,name:account.name};applyUser();}
     }
   </script>
-  
 </body>
 </html>
